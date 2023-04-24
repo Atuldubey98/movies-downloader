@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import useMouseScroll from "../hooks/useMouseScroll";
+import instance from "../instance";
 
 export default function HeaderLinks({
   url,
@@ -8,57 +10,63 @@ export default function HeaderLinks({
   toggleUrl: (paramUrl: string) => void;
 }) {
   const divRef = useMouseScroll();
-  const headerLinks: { label: string; url: string }[] = [
+  const [headerLinks, setHeaderLinks] = useState<
     {
-      label: "Top Trending",
-      url: "/trending/all/week?language=en-US",
-    },
-    {
-      label: "Top Rated",
-      url: "/movie/top_rated?language=en-US",
-    },
-    {
-      label: "Action Movies",
-      url: "/discover/movie?with_genres=28",
-    },
-    {
-      label: "Romantic Movies",
-      url: "/discover/movie?with_genres=27",
-    },
-    {
-      label: "Mystery",
-      url: "/discover/movie?with_genres=10749",
-    },
-    {
-      label: "Scify",
-      url: "/discover/movie?with_genres=9648",
-    },
-    {
-      label: "Western",
-      url: "/discover/movie?with_genres=878",
-    },
-    {
-      label: "Animation",
-      url: "/discover/movie?with_genres=37",
-    },
-    {
-      label: "TV",
-      url: "/discover/movie?with_genres=10770",
-    },
-  ];
+      name: string;
+      id: number;
+    }[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    (async () => {
+      setLoading(false);
+      try {
+        const { data } = await instance.get("/genre/movie/list");
+        setHeaderLinks(data.genres);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
   return (
     <ul ref={divRef} className="header__links">
-      {headerLinks.map((headerLink, index: number) => (
-        <li
-          onClick={() => toggleUrl(headerLink.url)}
-          key={index}
-          className={
-            url === headerLink.url ? "header__link selected" : "header__link"
-          }
-        >
-          {headerLink.label}
-        </li>
-      ))}
+      <li
+        onClick={() => toggleUrl(`/trending/all/week?language=en-US`)}
+        className={
+          url === `/trending/all/week?language=en-US`
+            ? "header__link selected"
+            : "header__link"
+        }
+      >
+        Trending
+      </li>
+      <li
+        onClick={() => toggleUrl(`/movie/top_rated`)}
+        className={
+          url === `/movie/top_rated` ? "header__link selected" : "header__link"
+        }
+      >
+        Top Rated
+      </li>
+      {loading
+        ? null
+        : headerLinks.map((headerLink, index: number) => (
+            <li
+              onClick={() =>
+                toggleUrl(`/discover/movie?with_genres=${headerLink.id}`)
+              }
+              key={index}
+              className={
+                url === `/discover/movie?with_genres=${headerLink.id}`
+                  ? "header__link selected"
+                  : "header__link"
+              }
+            >
+              {headerLink.name}
+            </li>
+          ))}
     </ul>
   );
 }

@@ -42,6 +42,7 @@ const x1337_1 = __importDefault(require("./torrents/x1337"));
 const yts_1 = __importDefault(require("./torrents/yts"));
 const piratebay_1 = __importDefault(require("./torrents/piratebay"));
 const path_1 = __importDefault(require("path"));
+const perf_hooks_1 = require("perf_hooks");
 const oneThreeThreeSeven = new x1337_1.default();
 const yts = new yts_1.default();
 const pirateBay = new piratebay_1.default();
@@ -61,7 +62,7 @@ app.get("/health", (_, res) => {
     return res.status(200).send("Server is healthy");
 });
 app.get("/api/v1/all/search", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const initialTime = performance.now();
+    const initialTime = perf_hooks_1.performance.now();
     const search = typeof req.query.query === "string" ? req.query.query : "";
     const page = typeof req.query.page === "string" && !isNaN(Number(req.query.page))
         ? Number(req.query.page)
@@ -78,7 +79,7 @@ app.get("/api/v1/all/search", (req, res, next) => __awaiter(void 0, void 0, void
         const totalMovies = responses.map((response) => response.status === "fulfilled" ? response.value : []);
         const movies = [];
         totalMovies.forEach((m) => movies.push(...m));
-        const time = (performance.now() - initialTime) / 1000;
+        const time = (perf_hooks_1.performance.now() - initialTime) / 1000;
         return res
             .status(200)
             .send({ time, data: movies, total: movies.length, page });

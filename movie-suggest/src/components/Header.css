@@ -51,6 +51,7 @@
 }
 .selected {
   text-decoration: underline;
+  font-weight: 900;
 }
 
 .header__top a {

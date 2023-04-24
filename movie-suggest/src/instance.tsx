@@ -8,7 +8,7 @@ const instance = axios.create({
 });
 
 export const torrentInstance = axios.create({
-  baseURL: import.meta.env.DEV ? "http//localhost:8080" : "/",
+  baseURL: import.meta.env.DEV ? "http://localhost:8080" : "/",
 });
 export default instance;
 export const imageUrl = import.meta.env.VITE_IMAGE_URL;
