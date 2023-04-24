@@ -1,0 +1,52 @@
+.torrent__page {
+  max-width: 80%;
+  margin: auto;
+}
+.torrent__loadMsgs p {
+  text-align: center;
+}
+.torrents {
+  margin-top: 0.8rem;
+  width: 100%;
+}
+.message__cancel {
+  flex-direction: column;
+}
+.message__cancel button {
+  padding: 0.3rem;
+  background-color: lightgray;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+.torrents__list {
+  list-style: none;
+  display: grid;
+  gap: 0.3rem;
+  width: 100%;
+}
+.show__more button {
+  padding: 0.3rem;
+  background-color: lightgray;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.messages {
+  margin-block: 0.8rem;
+}
+.message__cancel {
+  margin-block: 0.8rem;
+}
+.message__cancel p {
+  margin-block: 0.8rem;
+}
+@media screen and (max-width: 720px) {
+  .torrent__page {
+    max-width: 90%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .torrent__page {
+    max-width: 95%;
+  }
+}

@@ -1,0 +1,28 @@
+.torrent__dropDown {
+  background-color: rgb(97, 96, 96);
+  margin-inline: 0.8rem;
+  padding: 0.8rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  display: grid;
+  word-break: break-all;
+  grid-template-columns: 1fr 2fr;
+  animation: opacity-animation 300ms ease-in forwards;
+}
+.torrent__dropDown a {
+  color: white;
+}
+.torrent__dropDown .field {
+  font-weight: bold;
+}
+.torrent__poster img {
+  width: 100%;
+  max-width: 10rem;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 720px) {
+  .torrent__dropDown {
+    grid-template-columns: auto;
+  }
+}

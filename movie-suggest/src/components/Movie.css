@@ -1,0 +1,44 @@
+.movie {
+  max-width: 450px;
+  position: relative;
+  cursor: pointer;
+}
+
+.movie__img img {
+  width: 100%;
+  max-height: 20rem;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+.movie__about {
+  padding-inline: 0.3rem;
+  padding-block: 0.2rem;
+  position: absolute;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  width: 100%;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  background-color: rgb(53, 52, 52);
+}
+.movie__name {
+  font-weight: bold;
+}
+.movie:hover > .movie__about {
+  opacity: 1;
+}
+.movie__stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.movie__stats img {
+  max-width: 1rem;
+}
+
+@media screen and (max-width: 540px) {
+  .movie__about {
+    opacity: 1;
+  }
+}

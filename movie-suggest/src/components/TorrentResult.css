@@ -1,0 +1,28 @@
+.torrent__result {
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  word-break: break-all;
+}
+.torrent__name {
+  font-weight: bold;
+}
+.torrent__props {
+  transition: all 400ms ease-in;
+  cursor: pointer;
+  word-break: break-all;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  padding-block: 0.3rem;
+  padding-inline: 0.2rem;
+}
+.torrent__props:hover {
+  background-color: rgb(97, 96, 96);
+}
+.torrent__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}

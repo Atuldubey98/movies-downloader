@@ -1,0 +1,74 @@
+.modal__img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+}
+.add__favour {
+  font-weight: bold;
+  background-color: lightgray;
+  color: black;
+  padding: 0.3rem;
+  cursor: pointer;
+  border-radius: 0.3rem;
+}
+.modal__btns {
+  gap: 0.8rem;
+  justify-content: space-between;
+}
+.movie__modal {
+  animation: modal-open 300ms ease-in forwards;
+}
+.movie__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  max-width: 70rem;
+}
+.get__torrent {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  background-color: lightgray;
+  padding: 0.3rem;
+  border-radius: 0.3rem;
+}
+
+.get__torrent img {
+  width: 1.5rem;
+}
+img {
+  width: 100%;
+  max-height: 30rem;
+  object-fit: contain;
+}
+.detail {
+  display: flex;
+}
+.detail .field {
+  flex: 4;
+  font-weight: bold;
+}
+.detail .name {
+  flex: 9;
+}
+@media screen and (max-width: 720px) {
+  .movie__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 540px) {
+  .detail {
+    display: grid;
+  }
+}
+
+@keyframes modal-open {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
