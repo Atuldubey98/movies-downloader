@@ -1,11 +1,12 @@
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
-import createHttpError from "http-errors";
+import createHttpError, { isHttpError } from "http-errors";
 import ITorrentMovie from "./interfaces/ITorrentMovie";
 import OneThreeThreeSeven from "./torrents/x1337";
 import Yts from "./torrents/yts";
 import MoviesResponse from "./interfaces/MovieResponse";
 import PirateBay from "./torrents/piratebay";
+import path from "path";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -13,8 +14,17 @@ const app: Application = express();
 
 app.use(express.json());
 app.use(cors());
-
-app.get("/", (_: Request, res: Response) => {
+app.use(express.static(path.join(__dirname, "../../movie-suggest/dist")));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.originalUrl.startsWith("/api")) {
+    next();
+  } else {
+    return res.sendFile(
+      path.join(__dirname, "../../movie-suggest/dist/index.html")
+    );
+  }
+});
+app.get("/health", (_: Request, res: Response) => {
   return res.status(200).send("Server is healthy");
 });
 
@@ -55,5 +65,17 @@ app.get(
     }
   }
 );
-
+app.use((req: Request, res: Response, next: NextFunction) => {
+  next(createHttpError(404, "NOT_FOUND"));
+});
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  let errorMessage = "An unknown error occured.";
+  let statusCode = 500;
+  console.log(error);
+  if (isHttpError(error)) {
+    errorMessage = error.message;
+    statusCode = error.statusCode;
+  }
+  return res.status(statusCode).json({ errorMessage });
+});
 export default app;
