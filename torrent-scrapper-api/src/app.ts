@@ -7,6 +7,7 @@ import Yts from "./torrents/yts";
 import MoviesResponse from "./interfaces/MovieResponse";
 import PirateBay from "./torrents/piratebay";
 import path from "path";
+import { performance } from "perf_hooks";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
