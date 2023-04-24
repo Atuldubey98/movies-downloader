@@ -29,7 +29,9 @@ export default function HeaderLinks({
       }
     })();
   }, []);
-
+  if (loading) {
+    return null;
+  }
   return (
     <ul ref={divRef} className="header__links">
       <li
@@ -50,23 +52,21 @@ export default function HeaderLinks({
       >
         Top Rated
       </li>
-      {loading
-        ? null
-        : headerLinks.map((headerLink, index: number) => (
-            <li
-              onClick={() =>
-                toggleUrl(`/discover/movie?with_genres=${headerLink.id}`)
-              }
-              key={index}
-              className={
-                url === `/discover/movie?with_genres=${headerLink.id}`
-                  ? "header__link selected"
-                  : "header__link"
-              }
-            >
-              {headerLink.name}
-            </li>
-          ))}
+      {headerLinks.map((headerLink, index: number) => (
+        <li
+          onClick={() =>
+            toggleUrl(`/discover/movie?with_genres=${headerLink.id}`)
+          }
+          key={index}
+          className={
+            url === `/discover/movie?with_genres=${headerLink.id}`
+              ? "header__link selected"
+              : "header__link"
+          }
+        >
+          {headerLink.name}
+        </li>
+      ))}
     </ul>
   );
 }
