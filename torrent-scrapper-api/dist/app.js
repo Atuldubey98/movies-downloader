@@ -43,12 +43,14 @@ const yts_1 = __importDefault(require("./torrents/yts"));
 const piratebay_1 = __importDefault(require("./torrents/piratebay"));
 const path_1 = __importDefault(require("path"));
 const perf_hooks_1 = require("perf_hooks");
+const helmet_1 = __importDefault(require("helmet"));
 const oneThreeThreeSeven = new x1337_1.default();
 const yts = new yts_1.default();
 const pirateBay = new piratebay_1.default();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.use((0, helmet_1.default)());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../../movie-suggest/dist")));
 app.use((req, res, next) => {
     if (req.originalUrl.startsWith("/api")) {

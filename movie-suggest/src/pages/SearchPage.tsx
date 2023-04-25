@@ -2,15 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import "./SearchPage.css";
 
 import Movie from "../components/Movie";
+import MovieModal from "../components/MovieModal";
+import useQuery from "../hooks/useQuery";
 import useScrollPage from "../hooks/useScrollPage";
 import instance, { searchUrl } from "../instance";
-import useQuery from "../hooks/useQuery";
-import MovieModal from "../components/MovieModal";
 
-import { BounceLoader, PropagateLoader } from "react-spinners";
+import { FcCancel } from "react-icons/fc";
+import { BounceLoader } from "react-spinners";
 import { SearchContext } from "../SearchContext";
 import { IMovie } from "../interfaces";
-import { FcCancel } from "react-icons/fc";
 export default function SearchPage() {
   const { onSetMovies, movies } = useContext(SearchContext);
   const [loading, setLoading] = useState(false);

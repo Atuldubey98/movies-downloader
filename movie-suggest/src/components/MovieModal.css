@@ -12,6 +12,12 @@
   cursor: pointer;
   border-radius: 0.3rem;
 }
+.movie__close {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
 .modal__btns {
   gap: 0.8rem;
   justify-content: space-between;
