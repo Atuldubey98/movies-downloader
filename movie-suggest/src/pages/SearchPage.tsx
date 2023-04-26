@@ -58,7 +58,7 @@ export default function SearchPage() {
   return (
     <main>
       {loading ? (
-        <div className="d-flex-center loading">
+        <div className="d-flex-center">
           <BounceLoader loading={loading} color="white" />
         </div>
       ) : movies.length === 0 ? (

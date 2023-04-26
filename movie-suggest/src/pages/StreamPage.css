@@ -1,0 +1,46 @@
+.stream__page {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  gap: 0.8rem;
+  padding-inline: 0.8rem;
+}
+.video__placeHolder {
+  width: 100%;
+  height: 80svh;
+  background-color: rgb(8, 8, 8);
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+  justify-content: center;
+}
+.torrent__files {
+  width: 100%;
+}
+.torrent__files tr {
+  word-break: break-all;
+  text-align: left;
+}
+
+.torrent__contents table {
+  border: 3px solid black;
+}
+.torrent__contents table thead {
+  background-color: rgb(8, 8, 8);
+}
+table thead tr th {
+  padding: 0.5rem;
+}
+
+table tbody tr td {
+  padding: 0.5rem;
+}
+table tbody tr:nth-child(even) {
+  background-color: rgb(170, 169, 169);
+}
+
+@media screen and (max-width: 720px) {
+  .stream__page {
+    grid-template-columns: 1fr;
+    padding-inline: 0.3rem;
+  }
+}

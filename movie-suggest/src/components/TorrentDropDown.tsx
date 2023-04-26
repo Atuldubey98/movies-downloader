@@ -1,4 +1,6 @@
 import { BsMagnetFill } from "react-icons/bs";
+import { CiStreamOn } from "react-icons/ci";
+
 import { Link } from "react-router-dom";
 import { IDataEntity } from "../interfaces";
 import "./TorrentDropDown.css";
@@ -97,6 +99,16 @@ export default function TorrentDropDown({ torrent }: { torrent: IDataEntity }) {
               Magnet
             </Link>
           </p>
+        ) : null}
+        {torrent.magnet ? (
+          <Link
+            className="d-flex-center"
+            target="_blank"
+            to={`/stream?magnetUrl=${torrent.magnet}`}
+          >
+            <CiStreamOn size={20} />
+            <span>Stream</span>
+          </Link>
         ) : null}
         {torrent.authors && Array.isArray(torrent.authors) ? (
           <p>
