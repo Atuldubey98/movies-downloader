@@ -8,7 +8,7 @@ import MoviesResponse from "./interfaces/MovieResponse";
 import PirateBay from "./torrents/piratebay";
 import path from "path";
 import { performance } from "perf_hooks";
-import helmet from 'helmet';
+import helmet from "helmet";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -16,8 +16,12 @@ const app: Application = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(helmet())
 app.use(express.static(path.join(__dirname, "../../movie-suggest/dist")));
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.originalUrl.startsWith("/api")) {
     next();
