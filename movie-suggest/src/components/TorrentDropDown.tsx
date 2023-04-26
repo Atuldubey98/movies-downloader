@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { IDataEntity } from "../interfaces";
 import "./TorrentDropDown.css";
 import Torrent from "./Torrent";
+import TextTruncate from "react-text-truncate";
+
 export default function TorrentDropDown({ torrent }: { torrent: IDataEntity }) {
   return (
     <div className="torrent__dropDown">
@@ -13,10 +15,15 @@ export default function TorrentDropDown({ torrent }: { torrent: IDataEntity }) {
       ) : null}
       <div className="torrent__details">
         {torrent.description ? (
-          <p>
+          <div>
             <span className="field">Description : </span>
-            {torrent.description}
-          </p>
+            <TextTruncate
+              text={torrent.description}
+              element="p"
+              line={6}
+              textTruncateChild={<Link to={torrent.url}>Read on</Link>}
+            />
+          </div>
         ) : null}
         {torrent.size ? (
           <p>

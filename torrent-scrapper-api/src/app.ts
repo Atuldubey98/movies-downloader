@@ -67,7 +67,7 @@ app.get(
       const responses = await Promise.allSettled([
         pirateBay.generateResults(search, page),
         yts.generateResults(search, page),
-        oneThreeThreeSeven.generateResults(page, search),
+        oneThreeThreeSeven.generateResults(search, page),
       ]);
       const totalMovies = responses.map((response) =>
         response.status === "fulfilled" ? response.value : []

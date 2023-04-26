@@ -1,6 +1,7 @@
 import { CheerioAPI, load } from "cheerio";
 import TorrentSupper from "./TorrentSupper";
 import ITorrentMovie, { ITorrentsEntity } from "../interfaces/ITorrentMovie";
+import sanitizeText from "../utils/sanitizeText";
 
 class Yts extends TorrentSupper {
   constructor() {
@@ -40,7 +41,9 @@ class Yts extends TorrentSupper {
       const torrents: ITorrentsEntity[] = [];
       const description: string = $(
         "#synopsis > p.hidden-sm.hidden-md.hidden-lg"
-      ).text();
+      )
+        .text()
+        .trim();
       const rating: string = $(
         "#movie-info > div.bottom-info > div:nth-child(3) > span:nth-child(2)"
       ).text();

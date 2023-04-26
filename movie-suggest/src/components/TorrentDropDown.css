@@ -4,10 +4,11 @@
   padding: 0.8rem;
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
-  display: grid;
   word-break: break-all;
-  grid-template-columns: 1fr 2fr;
   animation: opacity-animation 300ms ease-in forwards;
+}
+.torrent__details {
+  width: 100%;
 }
 .torrent__dropDown a {
   color: white;

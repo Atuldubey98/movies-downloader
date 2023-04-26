@@ -54,7 +54,8 @@ class OneThreeThreeSeven extends TorrentSupper {
         : posterSrc.startsWith("//")
         ? `https:${posterSrc}`
         : posterSrc;
-      const description = $("#description > p.align-center").text();
+      const description = $("#description > p.align-center").text().trim();
+
       const screenshot: string[] = [];
       $("#description > p.align-center > a > img").each((_, element) => {
         screenshot.push($(element).attr("src"));
@@ -73,8 +74,8 @@ class OneThreeThreeSeven extends TorrentSupper {
     }
   }
   public async generateResults(
-    page: number = 1,
-    search: string
+    search: string,
+    page: number = 1
   ): Promise<ITorrentMovie[]> {
     try {
       const $: CheerioAPI = await this.generateSearch(page, search);
@@ -83,7 +84,7 @@ class OneThreeThreeSeven extends TorrentSupper {
       );
       const total = searchResultsTable.length;
       let movies: ITorrentMovie[] = [];
-      searchResultsTable.each((index, element) => {
+      searchResultsTable.each((_, element) => {
         const name: string = $(element)
           .find("td")
           .filter(".name")
