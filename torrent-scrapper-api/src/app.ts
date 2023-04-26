@@ -9,6 +9,9 @@ import PirateBay from "./torrents/piratebay";
 import path from "path";
 import { performance } from "perf_hooks";
 import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
+import debug from "debug";
+
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -35,8 +38,15 @@ app.get("/health", (_: Request, res: Response) => {
   return res.status(200).send("Server is healthy");
 });
 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 app.get(
   "/api/v1/all/search",
+  apiLimiter,
   async (
     req: Request,
     res: Response,
@@ -51,6 +61,7 @@ app.get(
         : 1;
     try {
       if (!search) {
+        debug(`Search not found !`);
         next(createHttpError(404, "NOT_FOUND"));
       }
       const responses = await Promise.allSettled([
@@ -72,13 +83,13 @@ app.get(
     }
   }
 );
-app.use((req: Request, res: Response, next: NextFunction) => {
+
+app.use((req: Request, _: Response, next: NextFunction) => {
   next(createHttpError(404, "NOT_FOUND"));
 });
-app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, _: Request, res: Response, next: NextFunction) => {
   let errorMessage = "An unknown error occured.";
   let statusCode = 500;
-  console.log(error);
   if (isHttpError(error)) {
     errorMessage = error.message;
     statusCode = error.statusCode;

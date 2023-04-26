@@ -9,6 +9,9 @@ process.on("SIGTERM", () => {
   });
 });
 
+process.on('SIGINT',()=>{
+  console.log('Close');
+})
 server.listen(PORT, () => {
   console.log("App is running on ", PORT);
 });

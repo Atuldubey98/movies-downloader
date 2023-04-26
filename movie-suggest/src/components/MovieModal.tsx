@@ -11,6 +11,9 @@ import { imageUrl } from "../instance";
 import { IMovie } from "../interfaces";
 import utorrentimg from "../assets/utorrent.svg";
 import "./MovieModal.css";
+import noimage from "../assets/noimage.svg";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 export default function MovieModal({
   movie,
   toggleModal,
@@ -83,11 +86,15 @@ export default function MovieModal({
         </div>
         <div className="movie__content">
           <div className="modal__img">
-            <img
-              loading="lazy"
-              src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
-              alt="Loading Image"
-            />
+            {movie.backdrop_path || movie.poster_path ? (
+              <LazyLoadImage
+                placeholderSrc={noimage}
+                src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
+                alt={movie.title || movie.original_name}
+              />
+            ) : (
+              <img loading="lazy" src={noimage} alt="Loading" />
+            )}
           </div>
           <div className="movie__details">
             <div className="detail">

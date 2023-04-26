@@ -5,6 +5,8 @@ import "./Movie.css";
 import like from "../assets/like.svg";
 import TextTruncate from "react-text-truncate";
 import noimage from "../assets/noimage.svg";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 export default function Movie({
   movie,
   onSetMovie,
@@ -23,13 +25,13 @@ export default function Movie({
     >
       <div className="movie__img">
         {movie.backdrop_path || movie.poster_path ? (
-          <img
-            loading="lazy"
+          <LazyLoadImage
+            placeholderSrc={noimage}
             src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
-            alt="Loading Image"
+            alt={movie.title || movie.original_name}
           />
         ) : (
-          <img src={noimage} alt="Loading" />
+          <img loading="lazy" src={noimage} alt="Loading"  />
         )}
       </div>
       <div className="movie__about">
