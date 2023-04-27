@@ -15,6 +15,8 @@ import OneThreeThreeSeven from "./torrents/x1337";
 import Yts from "./torrents/yts";
 import { downLoadMovieHeaders, movieHeaders } from "./utils/movieHeaders";
 import { toEntry } from "./utils/streamUtils";
+import pump from "pump";
+
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -141,22 +143,20 @@ app.get(
         if (!file) {
           next(createHttpError(404, "NOT_FOUND"));
         }
-        if (videoPath.endsWith(".mp4") || videoPath.endsWith(".mkv")) {
-          if (!range) {
-            next(createHttpError(404, "Range Header not found !"));
-          }
+        if (range) {
           const { headers, start, end } = movieHeaders(range, file);
           res.writeHead(206, headers);
-          const videoStream = file.createReadStream({
-            start,
-            end,
-          });
-          videoStream.pipe(res);
+          pump(
+            file.createReadStream({
+              start,
+              end,
+            }),
+            res
+          );
         } else {
           const head = downLoadMovieHeaders(file.name);
           res.writeHead(200, head);
-          const fileStream = file.createReadStream();
-          fileStream.pipe(res);
+          pump(file.createReadStream(), res);
         }
       });
     } catch (error) {
