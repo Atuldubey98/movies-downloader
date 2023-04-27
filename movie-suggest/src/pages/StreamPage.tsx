@@ -3,20 +3,20 @@ import { useState, useEffect } from "react";
 import "./StreamPage.css";
 import { baseURL, fetchFiles, streamMedia, torrentInstance } from "../instance";
 import { BounceLoader } from "react-spinners";
-import mimeTypes from "mime-types";
+import ReactPlayer from "react-player";
+import { Link } from "react-router-dom";
+import { IStreamResponse } from "../interfaces";
+
 export default function StreamPage() {
   const query = useQuery();
   const magnetUrl = query.get("magnetUrl") || "";
-  const [files, setFiles] = useState<
-    { name: string; length: string; path: string }[]
-  >([]);
+  const videoPath = query.get("videoPath") || "";
+  const [streamResponse, setStreamResponse] = useState<IStreamResponse>({
+    files: [],
+    totalLength: "",
+  });
   const [loading, setLoading] = useState<boolean>(false);
-  const [videoPath, setVideoPath] = useState<string>("");
-  async function onChangePath(name: string) {
-    if (name.endsWith(".mp4") || name.endsWith(".mkv")) {
-      setVideoPath(name);
-    }
-  }
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -25,22 +25,8 @@ export default function StreamPage() {
           params: {
             magnetUrl,
           },
-          headers: {
-            "Content-Type": "application/xml",
-          },
         });
-        setFiles(
-          data
-            .split("\n")
-            .map((file: string) => {
-              const [name, length, path] = file.split(", ");
-              return { name, length, path };
-            })
-            .filter(
-              (file: { name: string; length: string; path: string }) =>
-                file.name !== ""
-            )
-        );
+        setStreamResponse(data);
       } catch (error) {
       } finally {
         setLoading(false);
@@ -53,19 +39,22 @@ export default function StreamPage() {
     <main className="stream__page">
       {magnetUrl && videoPath ? (
         <div className="video__placeHolder">
-          <video
-            crossOrigin="anonymous"
-            id="videoPlayer"
-            controls
-            autoPlay
+          <ReactPlayer
+            config={{
+              file: {
+                attributes: {
+                  controlsList: "nodownload",
+                  crossOrigin: "false",
+                },
+              },
+            }}
+            onContextMenu={(e: any) => e.preventDefault()}
             width={"100%"}
-            muted
-          >
-            <source
-              src={`${baseURL}${streamMedia}?magnetUrl=${magnetUrl}&videoPath=${videoPath}`}
-              type={"video/mp4"}
-            />
-          </video>
+            playing
+            controls
+            height={"100%"}
+            url={`${baseURL}${streamMedia}?magnetUrl=${magnetUrl}&videoPath=${videoPath}`}
+          />
         </div>
       ) : (
         <div className="video__placeHolder">
@@ -82,32 +71,34 @@ export default function StreamPage() {
             <thead>
               <tr>
                 <th colSpan={7}>File Name</th>
-                <th colSpan={5}>File Size</th>
+                <th colSpan={5}>Size</th>
               </tr>
             </thead>
             <tbody>
-              {files.map((file, index) => (
+              {streamResponse.files.map((file, index) => (
                 <tr
                   role="button"
                   style={{
-                    cursor:
-                      file.name.endsWith(".mkv") || file.name.endsWith(".mp4")
-                        ? "pointer"
-                        : undefined,
+                    cursor: checkMime(file) ? "pointer" : undefined,
                   }}
-                  onClick={() => onChangePath(file.name)}
                   key={index}
                 >
                   <td
                     style={{
-                      color:
-                        file.name.endsWith(".mkv") || file.name.endsWith(".mp4")
-                          ? "green"
-                          : undefined,
+                      color: checkMime(file) ? "green" : undefined,
                     }}
                     colSpan={7}
                   >
-                    {file.name}
+                    <Link
+                      target={`${checkMime(file) ? "_self" : "_blank"}`}
+                      to={`${
+                        checkMime(file)
+                          ? `/stream?magnetUrl=${magnetUrl}&videoPath=${file.name}`
+                          : `${baseURL}/api/v1/torrent/video?magnetUrl=${magnetUrl}&videoPath=${file.name}`
+                      }`}
+                    >
+                      {file.name}
+                    </Link>
                   </td>
                   <td colSpan={5}>{file.length}</td>
                 </tr>
@@ -118,4 +109,8 @@ export default function StreamPage() {
       </div>
     </main>
   );
+
+  function checkMime(file: { name: string; length: string; path: string }) {
+    return file.name.endsWith(".mkv") || file.name.endsWith(".mp4");
+  }
 }

@@ -101,12 +101,8 @@ export default function TorrentDropDown({ torrent }: { torrent: IDataEntity }) {
           </p>
         ) : null}
         {torrent.magnet ? (
-          <Link
-            className="d-flex-center"
-            target="_blank"
-            to={`/stream?magnetUrl=${torrent.magnet}`}
-          >
-            <CiStreamOn size={20} />
+          <Link target="_blank" to={`/stream?magnetUrl=${torrent.magnet}`}>
+            <CiStreamOn color="black" size={20} />
             <span>Stream</span>
           </Link>
         ) : null}

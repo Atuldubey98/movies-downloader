@@ -1,19 +1,20 @@
+import bytes from "bytes";
 import cors from "cors";
+import debug from "debug";
 import express, { Application, NextFunction, Request, Response } from "express";
+import { rateLimit } from "express-rate-limit";
+import helmet from "helmet";
 import createHttpError, { isHttpError } from "http-errors";
-import ITorrentMovie from "./interfaces/ITorrentMovie";
-import OneThreeThreeSeven from "./torrents/x1337";
-import Yts from "./torrents/yts";
-import MoviesResponse from "./interfaces/MovieResponse";
-import PirateBay from "./torrents/piratebay";
 import path from "path";
 import { performance } from "perf_hooks";
-import helmet from "helmet";
-import { rateLimit } from "express-rate-limit";
-import debug from "debug";
 import torrentStream from "torrent-stream";
-import bytes from "bytes";
-import movieHeaders from "./utils/movieHeaders";
+import ITorrentMovie from "./interfaces/ITorrentMovie";
+import MoviesResponse from "./interfaces/MovieResponse";
+import PirateBay from "./torrents/piratebay";
+import OneThreeThreeSeven from "./torrents/x1337";
+import Yts from "./torrents/yts";
+import { downLoadMovieHeaders, movieHeaders } from "./utils/movieHeaders";
+import { toEntry } from "./utils/streamUtils";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -98,10 +99,20 @@ app.get(
       }
       const engine = torrentStream(magnetUrl);
       engine.on("ready", () => {
-        engine.files.forEach((file) => {
-          const { name, length, path } = file;
-          res.write(`${name}, ${bytes(length)}, ${path}\n`);
-        });
+        res.write(
+          JSON.stringify(
+            {
+              files: engine.files.map(toEntry),
+              totalLength: bytes(
+                engine.files.reduce((prevFile, currFile) => {
+                  return prevFile + currFile.length;
+                }, 0)
+              ),
+            },
+            null,
+            "  "
+          )
+        );
         res.end();
       });
     } catch (error) {
@@ -115,9 +126,6 @@ app.get(
   (req: Request, res: Response, next: NextFunction) => {
     const range = req.headers.range;
     try {
-      if (!range) {
-        next(createHttpError(404, "Range Header not found !"));
-      }
       const videoPath =
         typeof req.query.videoPath === "string" ? req.query.videoPath : "";
       if (!videoPath) {
@@ -127,21 +135,29 @@ app.get(
         typeof req.query.magnetUrl === "string" ? req.query.magnetUrl : "";
       const engine = torrentStream(magnetUrl);
       engine.on("ready", () => {
-        engine.files.forEach((file) => {
-          if (file.name === videoPath) {
-            if (videoPath.endsWith(".mp4") || videoPath.endsWith(".mkv")) {
-              const { headers, start, end } = movieHeaders(range, file);
-              res.writeHead(206, headers);
-              const videoStream = file.createReadStream({
-                start,
-                end,
-              });
-              videoStream.pipe(res);
-            } else {
-              next(createHttpError(404, "NOT_FOUND"));
-            }
+        const file: TorrentStream.TorrentFile = engine.files.find(
+          (file) => file.name === videoPath
+        );
+        if (!file) {
+          next(createHttpError(404, "NOT_FOUND"));
+        }
+        if (videoPath.endsWith(".mp4") || videoPath.endsWith(".mkv")) {
+          if (!range) {
+            next(createHttpError(404, "Range Header not found !"));
           }
-        });
+          const { headers, start, end } = movieHeaders(range, file);
+          res.writeHead(206, headers);
+          const videoStream = file.createReadStream({
+            start,
+            end,
+          });
+          videoStream.pipe(res);
+        } else {
+          const head = downLoadMovieHeaders(file.name);
+          res.writeHead(200, head);
+          const fileStream = file.createReadStream();
+          fileStream.pipe(res);
+        }
       });
     } catch (error) {
       next(error);

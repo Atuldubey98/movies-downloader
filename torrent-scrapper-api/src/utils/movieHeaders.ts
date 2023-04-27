@@ -1,9 +1,13 @@
+import createHttpError from "http-errors";
 import { OutgoingHttpHeaders } from "http2";
 
-export default function movieHeaders(
+export function movieHeaders(
   range: string,
   file: TorrentStream.TorrentFile
 ): { start: number; end: number; headers: OutgoingHttpHeaders } {
+  if (!range || range === undefined) {
+    throw createHttpError(404, "Range Header not found !");
+  }
   const videoSize = file.length;
   const CHUNK_SIZE: number = 10 ** 6;
   const start: number = Number(range.replace(/\D/g, ""));
@@ -16,4 +20,11 @@ export default function movieHeaders(
     "Content-Type": `video/mp4`,
   };
   return { start, end, headers };
+}
+export function downLoadMovieHeaders(name: string): OutgoingHttpHeaders {
+  const head: OutgoingHttpHeaders = {
+    "Content-disposition": "attachment; filename=" + name,
+    "Content-Type": "text/plain",
+  };
+  return head;
 }

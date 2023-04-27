@@ -14,7 +14,7 @@ export interface IMovie {
 }
 
 export interface ITorrentResult {
-  data?: (IDataEntity)[] | null;
+  data?: IDataEntity[] | null;
   time: number;
   total: number;
 }
@@ -27,24 +27,24 @@ export interface IDataEntity {
   url: string;
   uploader?: string | null;
   category?: string | null;
-  files?: (string)[] | null;
+  files?: string[] | null;
   poster?: string | null;
   magnet?: string | null;
   hash?: string | null;
   torrent?: string | null;
-  screenshot?: (string)[] | null;
+  screenshot?: string[] | null;
   id?: string | null;
-  authors?: (string)[] | null;
+  authors?: string[] | null;
   publisher?: string | null;
   year?: string | null;
   pages?: string | null;
   language?: string | null;
   extension?: string | null;
-  genre?: (string)[] | null;
+  genre?: string[] | null;
   rating?: string | null;
   description?: string | null;
   runtime?: string | null;
-  torrents?: (ITorrentsEntity)[] | null;
+  torrents?: ITorrentsEntity[] | null;
 }
 export interface IDropDownPropsTorrent {
   open: boolean;
@@ -58,4 +58,14 @@ export interface ITorrentsEntity {
   torrent: string;
   magnet: string;
   hash: string;
+}
+
+export interface TorrentFile {
+  name: string;
+  path: string;
+  length: string;
+}
+export interface IStreamResponse {
+  files: TorrentFile[];
+  totalLength: string;
 }
