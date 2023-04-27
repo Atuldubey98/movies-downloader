@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 import { OutgoingHttpHeaders } from "http2";
-
+import RangeParser from "range-parser";
 export function movieHeaders(
   range: string,
   file: TorrentStream.TorrentFile
@@ -9,15 +9,26 @@ export function movieHeaders(
     throw createHttpError(404, "Range Header not found !");
   }
   const videoSize = file.length;
-  const CHUNK_SIZE: number = 10 ** 6;
-  const start: number = Number(range.replace(/\D/g, ""));
-  const end: number = Math.min(start + CHUNK_SIZE, videoSize - 1);
+  const rp: RangeParser.Result | RangeParser.Ranges = RangeParser(
+    Number(file.length),
+    range
+  );
+  let end = 0;
+  let start = 0;
+  if (Array.isArray(rp)) {
+    end = rp[0].end;
+    start = rp[0].start;
+  }
   const contentLength = end - start + 1;
+
   const headers: OutgoingHttpHeaders = {
     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
     "Accept-Ranges": "bytes",
     "Content-Length": contentLength,
     "Content-Type": `video/mp4`,
+    "transferMode.dlna.org": "Streaming",
+    "contentFeatures.dlna.org":
+      "DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000",
   };
   return { start, end, headers };
 }
