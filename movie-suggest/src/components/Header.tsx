@@ -41,7 +41,7 @@ export default function Header() {
                 value={search}
                 onChange={(e) => setSearch(e.currentTarget.value)}
                 type="text"
-                placeholder="Search"
+                placeholder="Search a tv show or a movie"
               />
               <FiSearch size={32} color="black" type="submit" />
             </div>
