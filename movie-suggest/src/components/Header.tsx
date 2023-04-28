@@ -19,10 +19,8 @@ export default function Header() {
 
     if (search.toLowerCase() !== storageSearch) {
       resetMovies();
-      navigate(`/search?query=${search}`, {
-        replace: true,
-      });
     }
+    navigate(`/search?query=${search}`);
   }
   useEffect(() => {
     setSearch(query.get("query") || query.get("search") || "");
@@ -30,11 +28,11 @@ export default function Header() {
   return (
     <header>
       <div className="header__top">
-        <div className="d-flex-center banner">
-          <Link to={"/"}>
+        <div className="banner">
+          <Link className="d-flex-center" to={"/"}>
             <h1>Moviesss</h1>
+            <img src={banner} alt="banner" />
           </Link>
-          <img src={banner} alt="banner" />
         </div>
         <div className="search__form">
           <form onSubmit={onSubmit}>

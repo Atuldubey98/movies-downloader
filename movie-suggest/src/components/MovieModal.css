@@ -42,6 +42,9 @@
 .movie__modalDiv::-webkit-scrollbar {
   display: none;
 }
+.media__type{
+  text-transform: capitalize;
+}
 .get__torrent img {
   width: 1.5rem;
 }

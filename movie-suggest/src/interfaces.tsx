@@ -9,6 +9,7 @@ export interface IMovie {
   first_air_date: string;
   vote_count: string;
   id: number;
+  vote_average?: number;
   adult: boolean;
   popularity: number;
 }

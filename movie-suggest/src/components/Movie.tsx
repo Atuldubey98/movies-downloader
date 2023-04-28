@@ -7,6 +7,7 @@ import noimage from "../assets/noimage.svg";
 import { imageUrl } from "../instance";
 import { IMovie } from "../interfaces";
 import "./Movie.css";
+import { SiImdb } from "react-icons/si";
 type MovieProps = {
   movie: IMovie;
   onSetMovie?: (paramMovie: IMovie) => void;
@@ -43,10 +44,18 @@ const Movie = (props: MovieProps) => {
           text={movie.title || movie.original_name}
         />
         <div className="movie__stats">
-          <span>
+          <span className="d-flex-center">
             <img src={like} alt="like" /> {movie.vote_count}
           </span>
-          <span>{movie.release_date}</span>
+          <div className="d-flex-center movie__statsIcons">
+            <span>{movie.release_date}</span>
+            {movie.vote_average ? (
+              <span className="d-flex-center">
+                <SiImdb size={20} color="white" />
+                {movie.vote_average.toFixed(2)}
+              </span>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

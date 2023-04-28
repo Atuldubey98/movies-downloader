@@ -14,6 +14,7 @@ import "./MovieModal.css";
 import noimage from "../assets/noimage.svg";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { SiImdb } from "react-icons/si";
 export default function MovieModal({
   movie,
   toggleModal,
@@ -121,6 +122,21 @@ export default function MovieModal({
               <span className="field">Vote Popularity : </span>
               <span className="name">{movie.popularity}</span>
             </div>
+            {movie.vote_average ? (
+              <div className="detail">
+                <span className="field">
+                  <SiImdb size={20} color="white" />
+                  Imdb rating :
+                </span>
+                <span className="name"> {movie.vote_average.toFixed(2)}</span>
+              </div>
+            ) : null}
+            {movie.media_type ? (
+              <div className="detail">
+                <span className="field">Type :</span>
+                <span className="media__type name"> {movie.media_type}</span>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
