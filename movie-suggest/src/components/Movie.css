@@ -3,12 +3,22 @@
   position: relative;
   cursor: pointer;
 }
-
+.movie__img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .movie__img img {
   width: 100%;
   max-height: 20rem;
   object-fit: contain;
   border-radius: 0.5rem;
+}
+.movie__stats span{
+  gap: 0.3rem;
+}
+.movie__statsIcons {
+  gap: 0.2rem;
 }
 .movie__about {
   padding-inline: 0.3rem;

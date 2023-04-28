@@ -13,20 +13,26 @@ export default function Header() {
   const navigate = useNavigate();
   function onSubmit(e: any) {
     e.preventDefault();
-    resetMovies();
+    const storageSearch = localStorage.getItem("query")
+      ? localStorage.getItem("query")!.toLowerCase()
+      : "";
+
+    if (search.toLowerCase() !== storageSearch) {
+      resetMovies();
+    }
     navigate(`/search?query=${search}`);
   }
   useEffect(() => {
     setSearch(query.get("query") || query.get("search") || "");
-  }, []);
+  }, [query.get("query"), query.get("search")]);
   return (
     <header>
       <div className="header__top">
-        <div className="d-flex-center banner">
-          <Link to={"/"}>
+        <div className="banner">
+          <Link className="d-flex-center" to={"/"}>
             <h1>Moviesss</h1>
+            <img src={banner} alt="banner" />
           </Link>
-          <img src={banner} alt="banner" />
         </div>
         <div className="search__form">
           <form onSubmit={onSubmit}>
@@ -35,7 +41,7 @@ export default function Header() {
                 value={search}
                 onChange={(e) => setSearch(e.currentTarget.value)}
                 type="text"
-                placeholder="Search"
+                placeholder="Search a tv show or a movie"
               />
               <FiSearch size={32} color="black" type="submit" />
             </div>
