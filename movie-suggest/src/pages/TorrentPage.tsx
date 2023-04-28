@@ -7,7 +7,7 @@ import useTorrents from "../hooks/useTorrents";
 import { IDataEntity, IDropDownPropsTorrent } from "../interfaces";
 import "./TorrentPage.css";
 export default function TorrentPage() {
-  const { torrentResult, loading, controller, onCancelRequest } = useTorrents();
+  const { torrentResult, loading, onCancelRequest } = useTorrents();
   const [dropDownProps, setDropDownProps] = useState<IDropDownPropsTorrent>({
     open: false,
     torrentNumber: 0,

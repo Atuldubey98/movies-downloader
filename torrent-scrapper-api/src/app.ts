@@ -63,15 +63,7 @@ app.get(
     next: NextFunction
   ): Promise<Response<IMoviesResponse>> => {
     const initialTime = performance.now();
-    const search: string =
-      typeof req.query.query === "string" ? req.query.query : "";
-    const page: number =
-      typeof req.query.page === "string" &&
-      !isNaN(Number(req.query.page)) &&
-      Number(req.query.page) < 1
-        ? 1
-        : Number(req.query.page);
-
+    const { search, page } = searchAndPage(req);
     try {
       if (search.length === 0) {
         debug(`Search not found !`);
