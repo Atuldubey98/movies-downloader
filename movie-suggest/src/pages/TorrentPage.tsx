@@ -49,17 +49,15 @@ export default function TorrentPage() {
       ) : null}
       <section className="torrents">
         <div className="torrents__list">
-          {currentResult
-            ?.sort((torrent1, torrent2) => sortTorrents(torrent1, torrent2))
-            .map((torrent, index) => (
-              <TorrentResult
-                index={index}
-                updateDropDown={updateDropDown}
-                dropDownProps={dropDownProps}
-                torrent={torrent}
-                key={torrent.url + index}
-              />
-            ))}
+          {currentResult?.map((torrent, index) => (
+            <TorrentResult
+              index={index}
+              updateDropDown={updateDropDown}
+              dropDownProps={dropDownProps}
+              torrent={torrent}
+              key={torrent.url + index}
+            />
+          ))}
         </div>
         {offset < torrentResult.total ? (
           <div className="d-flex-center show__more">
@@ -75,14 +73,4 @@ export default function TorrentPage() {
       </section>
     </main>
   );
-}
-
-function sortTorrents(torrent1: IDataEntity, torrent2: IDataEntity): number {
-  const seed1 = isNaN(Number(torrent1?.seeders))
-    ? 0
-    : Number(torrent1?.seeders);
-  const seed2 = isNaN(Number(torrent2?.seeders))
-    ? 0
-    : Number(torrent2?.seeders);
-  return seed2 - seed1;
 }

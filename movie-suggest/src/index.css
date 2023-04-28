@@ -8,6 +8,7 @@
 body {
   background-color: #404040;
   color: white;
+  scroll-behavior: smooth;
 }
 
 .d-flex-center {

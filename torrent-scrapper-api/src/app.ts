@@ -4,18 +4,22 @@ import debug from "debug";
 import express, { Application, NextFunction, Request, Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import createHttpError, { isHttpError } from "http-errors";
+import createHttpError from "http-errors";
 import path from "path";
 import { performance } from "perf_hooks";
+import pump from "pump";
 import torrentStream from "torrent-stream";
+import IMoviesResponse from "./interfaces/IMovieResponse";
+import IResultResponse from "./interfaces/IResultResponse";
 import ITorrentMovie from "./interfaces/ITorrentMovie";
-import MoviesResponse from "./interfaces/MovieResponse";
 import PirateBay from "./torrents/piratebay";
 import OneThreeThreeSeven from "./torrents/x1337";
 import Yts from "./torrents/yts";
+import { errorHandler, logErrors } from "./utils/errorHandler";
 import { downLoadMovieHeaders, movieHeaders } from "./utils/movieHeaders";
 import { toEntry } from "./utils/streamUtils";
-import pump from "pump";
+import { searchAndPage } from "./utils/sanitizeText";
+import { sortMoviesOnSeeds } from "./utils/operateOnMovies";
 
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
@@ -57,39 +61,138 @@ app.get(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<MoviesResponse>> => {
+  ): Promise<Response<IMoviesResponse>> => {
     const initialTime = performance.now();
     const search: string =
       typeof req.query.query === "string" ? req.query.query : "";
     const page: number =
-      typeof req.query.page === "string" && !isNaN(Number(req.query.page))
-        ? Number(req.query.page)
-        : 1;
+      typeof req.query.page === "string" &&
+      !isNaN(Number(req.query.page)) &&
+      Number(req.query.page) < 1
+        ? 1
+        : Number(req.query.page);
+
     try {
-      if (!search) {
+      if (search.length === 0) {
         debug(`Search not found !`);
         next(createHttpError(404, "NOT_FOUND"));
+      } else {
+        const responses = await Promise.allSettled([
+          oneThreeThreeSeven.generateResults(search, page),
+          yts.generateResults(search, page),
+          pirateBay.generateResults(search, page),
+        ]);
+        const movies: ITorrentMovie[] = responses
+          .map((response) =>
+            response.status === "fulfilled" ? response.value.movies : []
+          )
+          .flat(1);
+        const time = (performance.now() - initialTime) / 1000;
+        return res.status(200).send({
+          time,
+          data: movies.sort(sortMoviesOnSeeds),
+          total: movies.length,
+          page,
+        });
       }
-      const responses = await Promise.allSettled([
-        pirateBay.generateResults(search, page),
-        yts.generateResults(search, page),
-        oneThreeThreeSeven.generateResults(search, page),
-      ]);
-      const totalMovies = responses.map((response) =>
-        response.status === "fulfilled" ? response.value : []
-      );
-      const movies: ITorrentMovie[] = [];
-      totalMovies.forEach((m) => movies.push(...m));
-      const time = (performance.now() - initialTime) / 1000;
-      return res
-        .status(200)
-        .send({ time, data: movies, total: movies.length, page });
     } catch (error) {
       next(error);
     }
   }
 );
+app.get(
+  "/api/v1/all/search/yts",
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response<IMoviesResponse>> => {
+    const initialTime = performance.now();
+    const { search, page } = searchAndPage(req);
 
+    if (search.length === 0) {
+      debug(`Search not found !`);
+      next(createHttpError(404, "NOT_FOUND"));
+    } else {
+      try {
+        const { movies, totalPages }: IResultResponse =
+          await yts.generateResults(search, page);
+        const time = (performance.now() - initialTime) / 1000;
+        return res.status(200).send({
+          time,
+          data: movies.sort(sortMoviesOnSeeds),
+          total: movies.length,
+          page,
+          totalPages,
+        });
+      } catch (error) {
+        next(error);
+      }
+    }
+  }
+);
+app.get(
+  "/api/v1/all/search/x1337",
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response<IMoviesResponse>> => {
+    const initialTime = performance.now();
+    const { search, page } = searchAndPage(req);
+
+    if (search.length === 0) {
+      debug(`Search not found !`);
+      next(createHttpError(404, "NOT_FOUND"));
+    } else {
+      try {
+        const { movies, totalPages }: IResultResponse =
+          await oneThreeThreeSeven.generateResults(search, page);
+        const time = (performance.now() - initialTime) / 1000;
+        return res.status(200).send({
+          time,
+          data: movies.sort(sortMoviesOnSeeds),
+          total: movies.length,
+          page,
+          totalPages,
+        });
+      } catch (error) {
+        next(error);
+      }
+    }
+  }
+);
+app.get(
+  "/api/v1/all/search/pirateBay",
+  async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response<IMoviesResponse>> => {
+    const initialTime = performance.now();
+    const { search, page } = searchAndPage(req);
+
+    if (search.length === 0) {
+      debug(`Search not found !`);
+      next(createHttpError(404, "NOT_FOUND"));
+    } else {
+      try {
+        const { movies, totalPages }: IResultResponse =
+          await pirateBay.generateResults(search, page);
+        const time = (performance.now() - initialTime) / 1000;
+        return res.status(200).send({
+          time,
+          data: movies.sort(sortMoviesOnSeeds),
+          total: movies.length,
+          page,
+          totalPages,
+        });
+      } catch (error) {
+        next(error);
+      }
+    }
+  }
+);
 app.get(
   "/api/v1/torrent/files",
   (req: Request, res: Response, next: NextFunction) => {
@@ -130,11 +233,12 @@ app.get(
     try {
       const videoPath =
         typeof req.query.videoPath === "string" ? req.query.videoPath : "";
-      if (!videoPath) {
-        next(createHttpError(404, "Video Path not found"));
-      }
+
       const magnetUrl =
         typeof req.query.magnetUrl === "string" ? req.query.magnetUrl : "";
+      if (videoPath.length === 0 || magnetUrl.length === 0) {
+        next(createHttpError(404, "NOT_FOUND"));
+      }
       const engine = torrentStream(magnetUrl);
       engine.on("ready", () => {
         const file: TorrentStream.TorrentFile = engine.files.find(
@@ -167,13 +271,6 @@ app.get(
 app.use((req: Request, _: Response, next: NextFunction) => {
   next(createHttpError(404, "NOT_FOUND"));
 });
-app.use((error: unknown, _: Request, res: Response) => {
-  let errorMessage = "An unknown error occured.";
-  let statusCode = 500;
-  if (isHttpError(error)) {
-    errorMessage = error.message;
-    statusCode = error.statusCode;
-  }
-  return res.status(statusCode).json({ errorMessage });
-});
+app.use(logErrors);
+app.use(errorHandler);
 export default app;

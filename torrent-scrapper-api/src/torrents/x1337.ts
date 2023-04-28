@@ -1,6 +1,7 @@
 import { CheerioAPI } from "cheerio";
 import ITorrentMovie from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
+import IResultResponse from "../interfaces/IResultResponse";
 class OneThreeThreeSeven extends TorrentSupper {
   constructor() {
     super("x1337");
@@ -25,7 +26,10 @@ class OneThreeThreeSeven extends TorrentSupper {
   public async getSingleTorrent(url: string) {
     const $: CheerioAPI = await this.getPageContent(url);
     const torrentsDiv = $(".no-top-radius > div > ul > li");
-    const magnet = $(torrentsDiv).find("a").attr("href");
+    const magnet = $(".no-top-radius > div > ul:nth-child(1) > li:nth-child(1)")
+      .find("a")
+      .attr("href");
+
     const torrents: string[] = [];
     $(torrentsDiv)
       .find("ul")
@@ -36,36 +40,37 @@ class OneThreeThreeSeven extends TorrentSupper {
         }
       });
     const uploader = $(torrentsDiv).find("span").find("a").text().trim();
-    const posterSrc = $("div.torrent-image").find("img").attr("src");
-    const poster = posterSrc.startsWith("/")
-      ? this.url + posterSrc
-      : posterSrc.startsWith("//")
-      ? `https:${posterSrc}`
-      : posterSrc;
+
     const description = $("#description > p.align-center").text().trim();
 
     const screenshot: string[] = [];
     $("#description > p.align-center > a > img").each((_, element) => {
       screenshot.push($(element).attr("src"));
     });
-
     return {
       torrent: torrents.length === 0 ? "" : torrents[torrents.length - 1],
       uploader,
       magnet,
       description,
-      poster,
       screenshot,
     };
   }
   public async generateResults(
     search: string,
     page = 1
-  ): Promise<ITorrentMovie[]> {
+  ): Promise<IResultResponse> {
     const $: CheerioAPI = await this.generateSearch(page, search);
     const searchResultsTable = $(
       "body > main > div > div > div > div.box-info-detail.inner-table > div.table-list-wrap > table > tbody > tr"
     );
+    const totalPagesLi = $("div.pagination > ul > li");
+    const totalPagesStr = $(
+      `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${totalPagesLi.length}) > a`
+    ).text();
+    if (isNaN(Number(totalPagesStr)) || page > Number(totalPagesStr)) {
+      return { movies: [], totalPages: Number(totalPagesStr) };
+    }
+    const totalPages = Number(totalPagesStr);
     let movies: ITorrentMovie[] = [];
     searchResultsTable.each((_, element) => {
       const name: string = $(element).find("td").filter(".name").text().trim();
@@ -88,13 +93,13 @@ class OneThreeThreeSeven extends TorrentSupper {
     const responses = await Promise.allSettled(
       movies.map(({ url }) => this.getSingleTorrent(url))
     );
-    const other = responses.map((response) =>
-      response.status === "fulfilled"
-        ? response?.value
-        : { torrents: [], uploader: "", magnet: "" }
-    );
+    const other = responses.map((response) => {
+      if (response.status === "fulfilled") {
+        return response.value;
+      }
+    });
     movies = movies.map((movie, index) => ({ ...movie, ...other[index] }));
-    return movies;
+    return { totalPages, movies };
   }
 }
 

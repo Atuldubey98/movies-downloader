@@ -1,3 +1,4 @@
+import IResultResponse from "../interfaces/IResultResponse";
 import ITorrentMovie from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
 import { CheerioAPI } from "cheerio";
@@ -9,13 +10,30 @@ class PirateBay extends TorrentSupper {
   public async generateResults(
     search: string,
     page = 1
-  ): Promise<ITorrentMovie[]> {
+  ): Promise<IResultResponse> {
     const $: CheerioAPI = await super.getPageContent(
       `/search/${search}/1/99/${page}`
     );
+    const table = $("#searchResult > tbody > tr");
+    const totalPagesDiv = $(
+      `#searchResult > tbody > tr:nth-child(${table.length}) > td`
+    )
+      .text()
+      .trim()
+      .split(" ");
+    const totalPages =
+      totalPagesDiv.length > 0
+        ? Number(totalPagesDiv[totalPagesDiv.length - 1])
+        : 0;
+    if (totalPages < page) {
+      return {
+        movies: [],
+        totalPages,
+      };
+    }
     const movies: ITorrentMovie[] = [];
 
-    $("#searchResult > tbody > tr").each((_, tr) => {
+    $(table).each((_, tr) => {
       const category = $(tr).find("td > center > a").text().trim();
       const name = $(tr).find("td > .detName > a").text();
       const url = $(tr).find("td > .detName > a").attr("href");
@@ -32,7 +50,7 @@ class PirateBay extends TorrentSupper {
         movies.push({ name, url, magnet, category, leechers, seeders });
       }
     });
-    return movies;
+    return { totalPages, movies };
   }
 }
 export default PirateBay;

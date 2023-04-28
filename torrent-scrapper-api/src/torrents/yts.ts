@@ -1,6 +1,7 @@
 import { CheerioAPI } from "cheerio";
 import ITorrentMovie, { ITorrentsEntity } from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
+import IResultResponse from "../interfaces/IResultResponse";
 
 class Yts extends TorrentSupper {
   constructor() {
@@ -21,9 +22,10 @@ class Yts extends TorrentSupper {
     const movies: ITorrentMovie[] = [];
     ytsDiv.each((_, element) => {
       const url = $(element).find("a").attr("href");
+      const poster = $(element).find("a > figure > img").attr("src");
       const name = $(element).find("div.browse-movie-bottom > a").text();
       const year = $(element).find("div.browse-movie-year").text();
-      movies.push({ name, url, year });
+      movies.push({ name, url, year, poster });
     });
     return movies;
   }
@@ -57,8 +59,11 @@ class Yts extends TorrentSupper {
   public async generateResults(
     search: string,
     page: number
-  ): Promise<ITorrentMovie[]> {
+  ): Promise<IResultResponse> {
     let movies: ITorrentMovie[] = await this.generateSearch(search, page);
+    if (page > 1) {
+      return { movies: [], totalPages: 1 };
+    }
     const responses = await Promise.allSettled(
       movies.map((movie) => this.getSingleTorrent(movie.url))
     );
@@ -68,7 +73,7 @@ class Yts extends TorrentSupper {
     movies = movies.map((movie, index) => {
       return { ...movie, ...others[index] };
     });
-    return movies;
+    return { movies, totalPages: 1 };
   }
 }
 
