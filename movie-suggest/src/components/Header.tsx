@@ -13,12 +13,20 @@ export default function Header() {
   const navigate = useNavigate();
   function onSubmit(e: any) {
     e.preventDefault();
-    resetMovies();
-    navigate(`/search?query=${search}`);
+    const storageSearch = localStorage.getItem("query")
+      ? localStorage.getItem("query")!.toLowerCase()
+      : "";
+
+    if (search.toLowerCase() !== storageSearch) {
+      resetMovies();
+      navigate(`/search?query=${search}`, {
+        replace: true,
+      });
+    }
   }
   useEffect(() => {
     setSearch(query.get("query") || query.get("search") || "");
-  }, []);
+  }, [query.get("query"), query.get("search")]);
   return (
     <header>
       <div className="header__top">

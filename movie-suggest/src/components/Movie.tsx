@@ -1,19 +1,19 @@
-import "./Movie.css";
+import { Ref, forwardRef, memo } from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import TextTruncate from "react-text-truncate";
+import like from "../assets/like.svg";
+import noimage from "../assets/noimage.svg";
 import { imageUrl } from "../instance";
 import { IMovie } from "../interfaces";
 import "./Movie.css";
-import like from "../assets/like.svg";
-import TextTruncate from "react-text-truncate";
-import noimage from "../assets/noimage.svg";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
-export default function Movie({
-  movie,
-  onSetMovie,
-}: {
+type MovieProps = {
   movie: IMovie;
   onSetMovie?: (paramMovie: IMovie) => void;
-}) {
+};
+
+const Movie = (props: MovieProps) => {
+  const { onSetMovie, movie } = props;
   return (
     <div
       onClick={() => {
@@ -31,7 +31,7 @@ export default function Movie({
             alt={movie.title || movie.original_name}
           />
         ) : (
-          <img loading="lazy" src={noimage} alt="Loading"  />
+          <img loading="lazy" src={noimage} alt="Loading" />
         )}
       </div>
       <div className="movie__about">
@@ -51,4 +51,5 @@ export default function Movie({
       </div>
     </div>
   );
-}
+};
+export default memo(Movie);

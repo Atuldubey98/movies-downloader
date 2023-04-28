@@ -62,9 +62,9 @@ export default function TorrentPage() {
             ))}
         </div>
         {offset < torrentResult.total ? (
-          <div className="d-flex-center btn show__more">
+          <div className="d-flex-center show__more">
             <button
-              className="d-flex-center"
+              className="d-flex-center btn"
               onClick={() => setOffset((o) => o + 10)}
             >
               <BsChevronDown size={20} />

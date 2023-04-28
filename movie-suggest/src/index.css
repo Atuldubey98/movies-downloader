@@ -26,6 +26,12 @@ body {
 .loading {
   width: 100%;
 }
+.btn {
+  transition: all 300ms ease-in;
+}
+.btn:hover {
+  outline: 2px solid darkgrey;
+}
 @keyframes opacity-animation {
   0% {
     opacity: 0;

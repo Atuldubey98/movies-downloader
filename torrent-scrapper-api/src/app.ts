@@ -167,7 +167,7 @@ app.get(
 app.use((req: Request, _: Response, next: NextFunction) => {
   next(createHttpError(404, "NOT_FOUND"));
 });
-app.use((error: unknown, _: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, _: Request, res: Response) => {
   let errorMessage = "An unknown error occured.";
   let statusCode = 500;
   if (isHttpError(error)) {

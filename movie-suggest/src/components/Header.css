@@ -18,13 +18,22 @@
   scrollbar-width: none;
   list-style: none;
   gap: 1rem;
-
   border-block: 3px solid white;
+}
+.header__links {
+  animation: move-left 300ms ease-in forwards;
 }
 .header__links::-webkit-scrollbar {
   display: none;
 }
-
+@keyframes move-left {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 .header__links li {
   white-space: nowrap;
   padding-block: 0.8em;

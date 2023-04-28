@@ -39,7 +39,9 @@
   padding: 0.3rem;
   border-radius: 0.3rem;
 }
-
+.movie__modalDiv::-webkit-scrollbar {
+  display: none;
+}
 .get__torrent img {
   width: 1.5rem;
 }
@@ -72,9 +74,9 @@ img {
 
 @keyframes modal-open {
   0% {
-    transform: translateY(-100%);
+    scale: 0.1;
   }
   100% {
-    transform: translateY(0%);
+    scale: 1;
   }
 }

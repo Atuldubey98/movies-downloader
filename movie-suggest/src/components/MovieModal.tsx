@@ -70,14 +70,14 @@ export default function MovieModal({
             ) : (
               <span
                 onClick={() => saveToLocalStorage(movie)}
-                className="add__favour d-flex-center"
+                className="btn add__favour d-flex-center"
               >
                 <AiOutlineStar />
                 Add to favourites
               </span>
             )}
             <Link
-              className="d-flex-center get__torrent"
+              className="btn d-flex-center get__torrent"
               to={`/torrents?search=${movie.title || movie.original_name}`}
             >
               <img src={utorrentimg} alt="torrent" /> Get Torrent

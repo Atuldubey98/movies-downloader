@@ -16,12 +16,8 @@ class TorrentSupper {
     });
   }
   public async getPageContent(url: string): Promise<CheerioAPI> {
-    try {
-      const { data } = await this.axiosInstance.get(url);
-      return load(data);
-    } catch (error) {
-      throw error;
-    }
+    const { data } = await this.axiosInstance.get(url);
+    return load(data);
   }
 }
 
