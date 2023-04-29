@@ -12,7 +12,7 @@ class Yts extends TorrentSupper {
     page = 1
   ): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(
-      `/browse-movies/${search}/all/all/1/latest/1/all?page=${page}`
+      `/browse-movies/${search}/all/all/1/latest/0/all`
     );
 
     const ytsDiv = $(

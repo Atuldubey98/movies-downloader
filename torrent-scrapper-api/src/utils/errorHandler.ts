@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { NextFunction, Request, Response, Errback } from "express";
+import { NextFunction, Request, Response } from "express";
 import { isHttpError } from "http-errors";
 export function logErrors(
   err: Error,
@@ -11,12 +11,7 @@ export function logErrors(
   next(err);
 }
 
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function errorHandler(err: Error, req: Request, res: Response) {
   let statusCode = 500;
   if (isHttpError(err)) {
     statusCode = err.statusCode;

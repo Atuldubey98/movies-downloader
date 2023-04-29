@@ -16,7 +16,7 @@ class PirateBay extends TorrentSupper {
     );
     const table = $("#searchResult > tbody > tr");
     const totalPagesDiv = $(
-      `#searchResult > tbody > tr:nth-child(${table.length}) > td`
+      `#searchResult > tbody > tr:nth-child(${table.length-1}) > td`
     )
       .text()
       .trim()

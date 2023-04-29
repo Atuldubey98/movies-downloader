@@ -64,12 +64,26 @@ class OneThreeThreeSeven extends TorrentSupper {
       "body > main > div > div > div > div.box-info-detail.inner-table > div.table-list-wrap > table > tbody > tr"
     );
     const totalPagesLi = $("div.pagination > ul > li");
-    const totalPagesStr = $(
+    const totalPagesStrCheck1 = $(
       `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${totalPagesLi.length}) > a`
     ).text();
+    const totalPagesStrCheck2 = $(
+      `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${
+        totalPagesLi.length - 1
+      }) > a`
+    ).text();
+    let totalPagesStr = isNaN(Number(totalPagesStrCheck1))
+      ? NaN
+      : Number(totalPagesStrCheck1);
+    totalPagesStr = isNaN(totalPagesStr)
+      ? Number(totalPagesStrCheck2)
+      : totalPagesStr;
+    console.log(totalPagesStr);
+
     if (isNaN(Number(totalPagesStr)) || page > Number(totalPagesStr)) {
       return { movies: [], totalPages: Number(totalPagesStr) };
     }
+
     const totalPages = Number(totalPagesStr);
     let movies: ITorrentMovie[] = [];
     searchResultsTable.each((_, element) => {

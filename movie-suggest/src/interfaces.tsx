@@ -15,9 +15,11 @@ export interface IMovie {
 }
 
 export interface ITorrentResult {
-  data?: IDataEntity[] | null;
+  data: IDataEntity[];
   time: number;
   total: number;
+  totalPages?: number;
+  page: number;
 }
 export interface IDataEntity {
   name: string;

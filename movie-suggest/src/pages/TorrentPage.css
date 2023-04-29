@@ -18,6 +18,31 @@
   cursor: pointer;
   border-radius: 0.5rem;
 }
+.result__stats p {
+  text-align: center;
+}
+.torrents__sites {
+  list-style-type: none;
+  gap: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.torrents__sites li {
+  gap: 0.1rem;
+  padding: 0.3rem;
+  cursor: pointer;
+  transition: all 300ms ease-in;
+  border-radius: 0.2rem;
+}
+.torrents__sites li:hover {
+  background-color: rgb(97, 96, 96);
+}
+
+.torrents__sites li.selected {
+  font-weight: bold;
+}
 .torrents__list {
   list-style: none;
   display: grid;
