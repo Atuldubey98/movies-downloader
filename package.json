@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd movie-suggest && npm i && npm run build",
-    "server": "cd torrent-scrapper-api && npm i",
+    "server": "cd torrent-scrapper-api && npm i && npm run build",
     "build": "npm run client && npm run server",
     "start": "cd torrent-scrapper-api && npm start"
   },
