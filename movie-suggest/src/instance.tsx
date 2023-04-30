@@ -16,3 +16,7 @@ export const searchUrl = "/search/multi?include_adult=false";
 export const torrentSearchUrl = "/api/v1/all/search";
 export const fetchFiles = "/api/v1/torrent/files";
 export const streamMedia = "/api/v1/torrent/video"
+export const allSearch = "/api/v1/all/search";
+export const x1337 = "/api/v1/all/search/x1337";
+export const yts = "/api/v1/all/search/yts";
+export const pirateBay = "/api/v1/all/search/pirateBay";

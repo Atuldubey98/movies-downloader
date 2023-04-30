@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ITorrentResult, ITorrentSite } from "../interfaces";
 import useQuery from "./useQuery";
-import { torrentInstance } from "../instance";
+import { allSearch, pirateBay, torrentInstance, x1337, yts } from "../instance";
 
 export default function useTorrents() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,22 +21,23 @@ export default function useTorrents() {
     }
   }
   const [siteIndex, setSiteIndex] = useState<number>(0);
+
   const torrentSites: ITorrentSite[] = [
     {
       label: "Relevant",
-      url: "/api/v1/all/search",
+      url: allSearch,
     },
     {
       label: "1337x",
-      url: "/api/v1/all/search/x1337",
+      url: x1337,
     },
     {
       label: "YTS",
-      url: "/api/v1/all/search/yts",
+      url: yts,
     },
     {
       label: "PiratesBay10",
-      url: "/api/v1/all/search/pirateBay",
+      url: pirateBay,
     },
   ];
   const query = useQuery();
