@@ -78,7 +78,6 @@ class OneThreeThreeSeven extends TorrentSupper {
     totalPagesStr = isNaN(totalPagesStr)
       ? Number(totalPagesStrCheck2)
       : totalPagesStr;
-    console.log(totalPagesStr);
 
     if (isNaN(Number(totalPagesStr)) || page > Number(totalPagesStr)) {
       return { movies: [], totalPages: Number(totalPagesStr) };

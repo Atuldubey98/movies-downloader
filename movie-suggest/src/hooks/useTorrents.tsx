@@ -16,8 +16,6 @@ export default function useTorrents() {
   );
   const [page, setPage] = useState<number>(1);
   function incrementPage() {
-    console.log(torrentResult.totalPages && torrentResult.totalPages > page);
-
     if (torrentResult.totalPages && torrentResult.totalPages > page) {
       setPage((p) => p + 1);
     }
@@ -76,7 +74,6 @@ export default function useTorrents() {
         );
         onChangeTorrentResult(data);
       } catch (error) {
-        
       } finally {
         setLoading(false);
       }
