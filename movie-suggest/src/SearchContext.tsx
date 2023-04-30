@@ -42,9 +42,7 @@ export default function SearchContextProvider({
     <SearchContext.Provider
       value={{
         onSetMovies,
-
         movies,
-
         resetMovies,
         saveToLocalStorage,
         removeFromLocalStorage,

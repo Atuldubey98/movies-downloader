@@ -17,7 +17,6 @@ class TorrentSupper {
   }
   public async getPageContent(url: string): Promise<CheerioAPI> {
     const response = await this.axiosInstance.get(url);
-    console.log(response.config.url, "----", response.status);
     return load(response.data);
   }
 }

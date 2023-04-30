@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ITorrentResult } from "../interfaces";
+import { ITorrentResult, ITorrentSite } from "../interfaces";
 import useQuery from "./useQuery";
 import { torrentInstance } from "../instance";
 
@@ -23,7 +23,7 @@ export default function useTorrents() {
     }
   }
   const [siteIndex, setSiteIndex] = useState<number>(0);
-  const torrentSites = [
+  const torrentSites: ITorrentSite[] = [
     {
       label: "Relevant",
       url: "/api/v1/all/search",
@@ -76,7 +76,7 @@ export default function useTorrents() {
         );
         onChangeTorrentResult(data);
       } catch (error) {
-        console.log(error);
+        
       } finally {
         setLoading(false);
       }

@@ -26,7 +26,6 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: 100%;
   border-block: 3px solid white;
   flex-wrap: wrap;
 }
@@ -49,7 +48,6 @@
   display: grid;
   gap: 0.3rem;
   margin: auto;
-  width: 80%;
 }
 .show__more button {
   padding: 0.3rem;
@@ -66,14 +64,18 @@
 .message__cancel p {
   margin-block: 0.8rem;
 }
+.torrents {
+  max-width: 85%;
+  margin: auto;
+}
 @media screen and (max-width: 720px) {
-  .torrents__list {
-    max-width: 95%;
+  .torrents {
+    max-width: 90%;
   }
 }
 
 @media screen and (max-width: 450px) {
-  .torrents__list {
+  .torrents {
     max-width: 95%;
   }
 }

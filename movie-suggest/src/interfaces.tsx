@@ -13,7 +13,10 @@ export interface IMovie {
   adult: boolean;
   popularity: number;
 }
-
+export interface ITorrentSite {
+  label: string;
+  url: string;
+}
 export interface ITorrentResult {
   data: IDataEntity[];
   time: number;
@@ -21,6 +24,7 @@ export interface ITorrentResult {
   totalPages?: number;
   page: number;
 }
+
 export interface IDataEntity {
   name: string;
   size?: string | null;
@@ -71,4 +75,9 @@ export interface TorrentFile {
 export interface IStreamResponse {
   files: TorrentFile[];
   totalLength: string;
+}
+export interface IStreamLinkProps {
+  file: TorrentFile;
+  index: number;
+  magnetUrl: string;
 }

@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { FcCancel } from "react-icons/fc";
+import { BsChevronDown } from "react-icons/bs";
+import { BiCameraMovie } from "react-icons/bi";
+
 import { PropagateLoader } from "react-spinners";
+import LoadingTorrents from "../components/LoadingTorrents";
 import TorrentResult from "../components/TorrentResult";
+import TorrentSite from "../components/TorrentSite";
 import useTorrents from "../hooks/useTorrents";
 import { IDropDownPropsTorrent } from "../interfaces";
 import "./TorrentPage.css";
-import { BsChevronDown } from "react-icons/bs";
-import { AiOutlineCheck } from "react-icons/ai";
+import DataNotFound from "../components/DataNotFound";
 export default function TorrentPage() {
   const {
     torrentResult,
@@ -28,19 +31,7 @@ export default function TorrentPage() {
   return (
     <main className="torrent__page">
       <div className="messages">
-        {loading ? (
-          <div className="d-flex-center message__cancel">
-            <p style={{ textAlign: "center" }}>
-              Get your popcorn ! It might take one to two minutes
-            </p>
-            <button
-              onClick={() => onCancelRequest()}
-              className="btn d-flex-center"
-            >
-              <FcCancel size={20} color="black" /> <span>Cancel Request</span>
-            </button>
-          </div>
-        ) : null}
+        {loading ? <LoadingTorrents onCancelRequest={onCancelRequest} /> : null}
       </div>
       {loading ? null : torrentResult.total !== 0 ? (
         <section className="result__stats">
@@ -50,18 +41,13 @@ export default function TorrentPage() {
           <div className="torrent__filters">
             <ul className="d-flex-center torrents__sites">
               {torrentSites.map((torrentSite, index) => (
-                <li
+                <TorrentSite
                   key={torrentSite.url}
-                  onClick={() => onChangeSiteIndex(index)}
-                  className={`d-flex-center torrent__site ${
-                    siteIndex === index ? "selected" : ""
-                  }`}
-                >
-                  {index === siteIndex ? (
-                    <AiOutlineCheck size={20} color="white" />
-                  ) : null}
-                  <span>{torrentSite.label}</span>
-                </li>
+                  torrentSite={torrentSite}
+                  index={index}
+                  siteIndex={siteIndex}
+                  onChangeSiteIndex={onChangeSiteIndex}
+                />
               ))}
             </ul>
           </div>
@@ -69,15 +55,26 @@ export default function TorrentPage() {
       ) : null}
       <section className="torrents">
         <div className="torrents__list">
-          {torrentResult.data?.map((torrent, index) => (
-            <TorrentResult
-              index={index}
-              updateDropDown={updateDropDown}
-              dropDownProps={dropDownProps}
-              torrent={torrent}
-              key={torrent.url + index}
-            />
-          ))}
+          {torrentResult.data.length === 0 ? (
+            loading ? null : (
+              <DataNotFound
+                content="No torrent found"
+                color="white"
+                size={150}
+                Icon={BiCameraMovie}
+              />
+            )
+          ) : (
+            torrentResult.data?.map((torrent, index) => (
+              <TorrentResult
+                index={index}
+                updateDropDown={updateDropDown}
+                dropDownProps={dropDownProps}
+                torrent={torrent}
+                key={torrent.url + index}
+              />
+            ))
+          )}
         </div>
         {loading ? (
           <div className="loading d-flex-center">

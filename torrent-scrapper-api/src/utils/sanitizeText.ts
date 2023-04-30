@@ -12,7 +12,7 @@ export default function sanitizeText(text: string) {
 export function searchAndPage(req: Request): { search: string; page: number } {
   const search: string =
     typeof req.query.query === "string" ? req.query.query : "";
-  let page: number = 1;
+  let page = 1;
   if (typeof req.query.page === "string") {
     page = isNaN(Number(req.query.page)) ? page : Number(req.query.page);
   }

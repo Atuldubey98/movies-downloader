@@ -6,8 +6,9 @@ import MovieModal from "../components/MovieModal";
 import { FcCancel } from "react-icons/fc";
 import LoadingIndi from "../components/LoadingIndi";
 import useSearchPage from "../hooks/useSearchPage";
+import DataNotFound from "../components/DataNotFound";
 export default function SearchPage() {
-  const { loading, movies, onSetMovie, toggleModal, movie, isModalOpen } =
+  const { loading, movies, onSetMovie, toggleModal, movie, isModalOpen} =
     useSearchPage();
 
   return (
@@ -15,18 +16,12 @@ export default function SearchPage() {
       {loading ? (
         <LoadingIndi loading={loading} />
       ) : movies.length === 0 ? (
-        <div className="loading ">
-          <div className="d-flex-center">
-            <FcCancel size={150} color="red" />
-          </div>
-          <h2
-            style={{
-              textAlign: "center",
-            }}
-          >
-            No movies found !
-          </h2>
-        </div>
+        <DataNotFound
+          size={150}
+          color="red"
+          Icon={FcCancel}
+          content="No Movies found !"
+        />
       ) : null}
       <div className="movies">
         {movies.map((movie) => (
