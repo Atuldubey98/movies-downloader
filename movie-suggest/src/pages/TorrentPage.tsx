@@ -1,13 +1,25 @@
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
-import { FcCancel } from "react-icons/fc";
+import { BiCameraMovie } from "react-icons/bi";
+
 import { PropagateLoader } from "react-spinners";
+import LoadingTorrents from "../components/LoadingTorrents";
 import TorrentResult from "../components/TorrentResult";
+import TorrentSite from "../components/TorrentSite";
 import useTorrents from "../hooks/useTorrents";
-import { IDataEntity, IDropDownPropsTorrent } from "../interfaces";
+import { IDropDownPropsTorrent } from "../interfaces";
 import "./TorrentPage.css";
+import DataNotFound from "../components/DataNotFound";
 export default function TorrentPage() {
-  const { torrentResult, loading, controller, onCancelRequest } = useTorrents();
+  const {
+    torrentResult,
+    loading,
+    onCancelRequest,
+    siteIndex,
+    torrentSites,
+    onChangeSiteIndex,
+    incrementPage,
+  } = useTorrents();
   const [dropDownProps, setDropDownProps] = useState<IDropDownPropsTorrent>({
     open: false,
     torrentNumber: 0,
@@ -15,43 +27,45 @@ export default function TorrentPage() {
   function updateDropDown(drop: IDropDownPropsTorrent) {
     setDropDownProps(drop);
   }
-  const [offset, setOffset] = useState<number>(10);
-  const currentResult: IDataEntity[] = torrentResult.data
-    ? torrentResult.data?.slice(0, offset)
-    : [];
+
   return (
     <main className="torrent__page">
       <div className="messages">
-        {loading ? (
-          <div className="d-flex-center message__cancel">
-            <p style={{ textAlign: "center" }}>
-              Get your popcorn ! It might take one to two minutes
-            </p>
-            <button
-              onClick={() => onCancelRequest()}
-              className="btn d-flex-center"
-            >
-              <FcCancel size={20} color="black" /> <span>Cancel Request</span>
-            </button>
-          </div>
-        ) : null}
+        {loading ? <LoadingTorrents onCancelRequest={onCancelRequest} /> : null}
       </div>
-      {loading ? (
-        <div className="loading d-flex-center">
-          <PropagateLoader loading={loading} color="#ffffff" size={25} />
-        </div>
-      ) : torrentResult.total !== 0 ? (
-        <div className="result__stats d-flex-center">
-          <span>{`${
-            torrentResult.total
-          } results in ${torrentResult.time.toFixed(2)} seconds`}</span>
-        </div>
+      {loading ? null : torrentResult.total !== 0 ? (
+        <section className="result__stats">
+          <p>{`${torrentResult.total} results in ${torrentResult.time.toFixed(
+            2
+          )} seconds`}</p>
+          <div className="torrent__filters">
+            <ul className="d-flex-center torrents__sites">
+              {torrentSites.map((torrentSite, index) => (
+                <TorrentSite
+                  key={torrentSite.url}
+                  torrentSite={torrentSite}
+                  index={index}
+                  siteIndex={siteIndex}
+                  onChangeSiteIndex={onChangeSiteIndex}
+                />
+              ))}
+            </ul>
+          </div>
+        </section>
       ) : null}
       <section className="torrents">
         <div className="torrents__list">
-          {currentResult
-            ?.sort((torrent1, torrent2) => sortTorrents(torrent1, torrent2))
-            .map((torrent, index) => (
+          {torrentResult.data.length === 0 ? (
+            loading ? null : (
+              <DataNotFound
+                content="No torrent found"
+                color="white"
+                size={150}
+                Icon={BiCameraMovie}
+              />
+            )
+          ) : (
+            torrentResult.data?.map((torrent, index) => (
               <TorrentResult
                 index={index}
                 updateDropDown={updateDropDown}
@@ -59,14 +73,19 @@ export default function TorrentPage() {
                 torrent={torrent}
                 key={torrent.url + index}
               />
-            ))}
+            ))
+          )}
         </div>
-        {offset < torrentResult.total ? (
+        {loading ? (
+          <div className="loading d-flex-center">
+            <PropagateLoader loading={loading} color="#ffffff" size={25} />
+          </div>
+        ) : null}
+        {[1, 4].indexOf(siteIndex) != -1 &&
+        !loading &&
+        torrentResult.page < (torrentResult.totalPages || 0) ? (
           <div className="d-flex-center show__more">
-            <button
-              className="d-flex-center btn"
-              onClick={() => setOffset((o) => o + 10)}
-            >
+            <button onClick={incrementPage} className="d-flex-center btn">
               <BsChevronDown size={20} />
               <span>Show more</span>
             </button>
@@ -75,14 +94,4 @@ export default function TorrentPage() {
       </section>
     </main>
   );
-}
-
-function sortTorrents(torrent1: IDataEntity, torrent2: IDataEntity): number {
-  const seed1 = isNaN(Number(torrent1?.seeders))
-    ? 0
-    : Number(torrent1?.seeders);
-  const seed2 = isNaN(Number(torrent2?.seeders))
-    ? 0
-    : Number(torrent2?.seeders);
-  return seed2 - seed1;
 }

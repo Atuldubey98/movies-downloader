@@ -1,8 +1,9 @@
 import ITorrentMovie from "./ITorrentMovie";
 
-export default interface MoviesResponse {
+export default interface IMoviesResponse {
   total: number;
   data: ITorrentMovie[];
   time: number;
   page: number;
+  totalPages: number;
 }

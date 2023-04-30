@@ -1,6 +1,7 @@
 import { CheerioAPI } from "cheerio";
 import ITorrentMovie, { ITorrentsEntity } from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
+import IResultResponse from "../interfaces/IResultResponse";
 
 class Yts extends TorrentSupper {
   constructor() {
@@ -8,10 +9,10 @@ class Yts extends TorrentSupper {
   }
   public async generateSearch(
     search: string,
-    page = 1
+    _: number
   ): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(
-      `/browse-movies/${search}/all/all/1/latest/1/all?page=${page}`
+      `/browse-movies/${search}/all/all/1/latest/0/all`
     );
 
     const ytsDiv = $(
@@ -21,9 +22,10 @@ class Yts extends TorrentSupper {
     const movies: ITorrentMovie[] = [];
     ytsDiv.each((_, element) => {
       const url = $(element).find("a").attr("href");
+      const poster = $(element).find("a > figure > img").attr("src");
       const name = $(element).find("div.browse-movie-bottom > a").text();
       const year = $(element).find("div.browse-movie-year").text();
-      movies.push({ name, url, year });
+      movies.push({ name, url, year, poster });
     });
     return movies;
   }
@@ -57,8 +59,11 @@ class Yts extends TorrentSupper {
   public async generateResults(
     search: string,
     page: number
-  ): Promise<ITorrentMovie[]> {
+  ): Promise<IResultResponse> {
     let movies: ITorrentMovie[] = await this.generateSearch(search, page);
+    if (page > 1) {
+      return { movies: [], totalPages: 1 };
+    }
     const responses = await Promise.allSettled(
       movies.map((movie) => this.getSingleTorrent(movie.url))
     );
@@ -68,7 +73,7 @@ class Yts extends TorrentSupper {
     movies = movies.map((movie, index) => {
       return { ...movie, ...others[index] };
     });
-    return movies;
+    return { movies, totalPages: 1 };
   }
 }
 

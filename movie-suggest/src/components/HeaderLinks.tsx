@@ -29,10 +29,8 @@ export default function HeaderLinks({
       }
     })();
   }, []);
-  if (loading) {
-    return null;
-  }
-  return (
+
+  return loading ? null : (
     <ul ref={divRef} className="header__links">
       <li
         onClick={() => toggleUrl(`/trending/all/week?language=en-US`)}

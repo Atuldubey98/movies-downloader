@@ -1,5 +1,4 @@
 .torrent__page {
-  max-width: 80%;
   margin: auto;
 }
 .torrent__loadMsgs p {
@@ -18,11 +17,37 @@
   cursor: pointer;
   border-radius: 0.5rem;
 }
+.result__stats p {
+  text-align: center;
+}
+.torrents__sites {
+  list-style-type: none;
+  gap: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-block: 3px solid white;
+  flex-wrap: wrap;
+}
+.torrents__sites li {
+  gap: 0.1rem;
+  padding: 0.3rem;
+  cursor: pointer;
+  transition: all 300ms ease-in;
+  border-radius: 0.2rem;
+}
+.torrents__sites li:hover {
+  background-color: rgb(97, 96, 96);
+}
+
+.torrents__sites li.selected {
+  font-weight: bold;
+}
 .torrents__list {
   list-style: none;
   display: grid;
   gap: 0.3rem;
-  width: 100%;
+  margin: auto;
 }
 .show__more button {
   padding: 0.3rem;
@@ -39,14 +64,18 @@
 .message__cancel p {
   margin-block: 0.8rem;
 }
+.torrents {
+  max-width: 85%;
+  margin: auto;
+}
 @media screen and (max-width: 720px) {
-  .torrent__page {
+  .torrents {
     max-width: 90%;
   }
 }
 
 @media screen and (max-width: 450px) {
-  .torrent__page {
+  .torrents {
     max-width: 95%;
   }
 }

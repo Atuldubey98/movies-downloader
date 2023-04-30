@@ -18,6 +18,7 @@
   scrollbar-width: none;
   list-style: none;
   gap: 1rem;
+  background-color: #404040;
   border-block: 3px solid white;
 }
 .header__links {

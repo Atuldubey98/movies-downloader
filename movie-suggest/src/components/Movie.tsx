@@ -27,7 +27,7 @@ const Movie = (props: MovieProps) => {
       <div className="movie__img">
         {movie.backdrop_path || movie.poster_path ? (
           <LazyLoadImage
-            placeholderSrc={noimage}
+            effect="blur"
             src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
             alt={movie.title || movie.original_name}
           />

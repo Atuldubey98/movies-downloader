@@ -33,12 +33,9 @@ table thead tr th {
 table tbody tr td {
   padding: 0.5rem;
 }
-table tbody tr td a{
+table tbody tr td a {
   color: white;
   text-decoration: none;
-}
-table tbody tr:nth-child(even) {
-  background-color: rgb(170, 169, 169);
 }
 
 @media screen and (max-width: 720px) {

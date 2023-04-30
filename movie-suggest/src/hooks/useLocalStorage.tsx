@@ -7,6 +7,7 @@ export default function useLocalStorage() {
   )
     ? JSON.parse(localStorage.getItem("favourites") || "{}")
     : {};
+
   const [favourites, setFavourites] = useState<{ [key: string]: IMovie }>(
     favourDefault
   );
@@ -14,7 +15,7 @@ export default function useLocalStorage() {
     favourites[movie.id] = movie;
     const favStr = JSON.stringify(favourites);
     localStorage.setItem("favourites", favStr);
-    setFavourites({ [movie.id]: movie });
+    setFavourites({ ...favourites, [movie.id]: movie });
     return true;
   }
   function removeFromLocalStorage(movieId: number) {
