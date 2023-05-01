@@ -16,6 +16,10 @@
 .single__poster span img {
   border-radius: 1rem;
 }
+.single__meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
 .languages__list {
   list-style: none;
   display: flex;

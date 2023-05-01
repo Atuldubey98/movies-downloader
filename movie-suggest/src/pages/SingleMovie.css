@@ -15,7 +15,10 @@
   max-width: 20rem;
   margin: auto;
 }
-
+.single__posterDescription {
+  display: grid;
+  gap: 0.5rem;
+}
 .single__poster span img {
   border-radius: 1rem;
   width: 100%;
@@ -33,6 +36,9 @@
   align-items: center;
   gap: 0.8rem;
   justify-content: flex-start;
+}
+.around {
+  justify-content: space-around;
 }
 .circular__btn {
   display: flex;

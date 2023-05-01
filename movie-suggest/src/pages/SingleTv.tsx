@@ -6,7 +6,8 @@ import instance, { imageUrl } from "../instance";
 import { ITvSingle } from "../interfaces";
 import "./SingleTv.css";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import utorrentimg from "../assets/utorrent.svg";
 
 export default function SingleTv() {
   const { loading, error, data, dispatch } = useFetch<ITvSingle>();
@@ -96,39 +97,48 @@ export default function SingleTv() {
                 <progress value="25">75%</progress>
               </div>
             </div>
+            <div className="single__meta">
+              {data?.spoken_languages ? (
+                <div className="single__languages">
+                  <h3>Languages Available :</h3>
+                  <ul className="languages__list">
+                    {data.spoken_languages.map((language) => (
+                      <li key={language.iso_639_1} className="language">
+                        <p>{language.english_name}</p>
+                        <p>{language.name}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
-            {data?.spoken_languages ? (
-              <div className="single__languages">
-                <h3>Languages Available :</h3>
-                <ul className="languages__list">
-                  {data.spoken_languages.map((language) => (
-                    <li key={language.iso_639_1} className="language">
-                      <p>{language.english_name}</p>
-                      <p>{language.name}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {data?.original_language ? (
-              <div>
-                <h3>Original Language: </h3>
-                <p>{`${data?.original_language}`}</p>
-              </div>
-            ) : null}
-            {data?.number_of_seasons ? (
-              <div>
-                <h3>No of seasons : </h3>
-                <p>{`${data?.number_of_seasons}`}</p>
-              </div>
-            ) : null}
-            {data?.number_of_episodes ? (
-              <div>
-                <h3>No of episodes : </h3>
-                <p>{`${data?.number_of_episodes}`}</p>
-              </div>
-            ) : null}
+              {data?.original_language ? (
+                <div>
+                  <h3>Original Language: </h3>
+                  <p>{`${data?.original_language}`}</p>
+                </div>
+              ) : null}
+              {data?.number_of_seasons ? (
+                <div>
+                  <h3>No of seasons : </h3>
+                  <p>{`${data?.number_of_seasons}`}</p>
+                </div>
+              ) : null}
+              {data?.number_of_episodes ? (
+                <div>
+                  <h3>No of episodes : </h3>
+                  <p>{`${data?.number_of_episodes}`}</p>
+                </div>
+              ) : null}
+            </div>
+            <div className="single__btns around">
+              <Link
+                className="btn d-flex-center get__torrent"
+                to={`/torrents?search=${data.name || data.original_name}`}
+              >
+                <img src={utorrentimg} alt="torrent" /> Get Torrent
+              </Link>
+            </div>
           </div>
         </section>
       </div>

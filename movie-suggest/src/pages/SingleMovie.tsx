@@ -6,6 +6,9 @@ import { imageUrl } from "../instance";
 import "./SingleMovie.css";
 import DataNotFound from "../components/DataNotFound";
 import { FcCancel } from "react-icons/fc";
+import { Link } from "react-router-dom";
+import utorrentimg from "../assets/utorrent.svg";
+
 export default function SingleMovie() {
   const { loading, error, data } = useSingleMovieTv();
 
@@ -40,14 +43,18 @@ export default function SingleMovie() {
           className="single__background"
         >
           <section>
-            <div className="single__poster">
+            <Link
+              target="_blank"
+              to={data.homepage || "#"}
+              className="single__poster"
+            >
               <LazyLoadImage
                 effect="blur"
                 placeholderSrc={nomovie}
                 src={imageUrl + `${data?.poster_path || data?.backdrop_path}`}
                 alt={data?.title || data?.original_title}
               />
-            </div>
+            </Link>
             <div className="single__posterDescription">
               {data?.original_title || data?.title ? (
                 <h1>
@@ -113,7 +120,12 @@ export default function SingleMovie() {
               {data?.revenue ? (
                 <div>
                   <h3>Revenue Genereated : </h3>
-                  <p>{`$ ${data?.revenue}`}</p>
+                  <p>
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    }).format(data.revenue)}
+                  </p>
                 </div>
               ) : null}
               {data?.original_language ? (
@@ -122,6 +134,14 @@ export default function SingleMovie() {
                   <p>{`${data?.original_language}`}</p>
                 </div>
               ) : null}
+              <div className="single__btns around">
+                <Link
+                  className="btn d-flex-center get__torrent"
+                  to={`/torrents?search=${data.title || data.original_title}`}
+                >
+                  <img src={utorrentimg} alt="torrent" /> Get Torrent
+                </Link>
+              </div>
             </div>
           </section>
         </div>
