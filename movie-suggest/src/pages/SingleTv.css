@@ -1,0 +1,102 @@
+.single__background section {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  padding: 0.8rem;
+  gap: 0.8rem;
+}
+.single__background section {
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.2);
+}
+.single__poster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.single__poster span img {
+  border-radius: 1rem;
+}
+.languages__list {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.8rem;
+}
+.single__btns {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  justify-content: flex-start;
+}
+.circular__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3rem;
+  border: 1px solid white;
+  background-color: #404040;
+}
+.languages__list .language :nth-child(1) {
+  font-weight: 500;
+}
+.single__voteCount {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  position: relative;
+}
+.single__voteCount span {
+  position: absolute;
+  text-align: center;
+  color: black;
+  transform: translate(20%, 50%);
+}
+
+.single__voteCount progress {
+  visibility: hidden;
+  height: 0;
+  width: 0;
+}
+.single__seasons {
+  padding-inline: 0.8rem;
+}
+.seasons {
+  list-style: none;
+  display: grid;
+  gap: 0.8rem;
+}
+.seasons li {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 1rem;
+}
+.single__poster span img {
+  border-radius: 1rem;
+  width: 100%;
+}
+.single__seasons {
+  padding-block: 1rem;
+}
+.single__seasons h2 {
+  padding-block: 1rem;
+}
+.seasons li span {
+  max-width: 20rem;
+  margin: auto;
+}
+.seasons li span img {
+  width: 100%;
+  border-bottom-left-radius: 0.8rem;
+  border-top-left-radius: 0.8rem;
+}
+@media screen and (max-width: 720px) {
+  .single__background section {
+    grid-template-columns: 1fr;
+    padding: 0.5rem;
+  }
+  .seasons li {
+    grid-template-columns: 1fr;
+  }
+}

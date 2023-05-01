@@ -10,7 +10,9 @@ body {
   color: white;
   scroll-behavior: smooth;
 }
-
+.icon{
+  cursor: pointer;
+}
 .d-flex-center {
   display: flex;
   align-items: center;

@@ -20,3 +20,4 @@ export const allSearch = "/api/v1/all/search";
 export const x1337 = "/api/v1/all/search/x1337";
 export const yts = "/api/v1/all/search/yts";
 export const pirateBay = "/api/v1/all/search/pirateBay";
+export const movie = "/movie";

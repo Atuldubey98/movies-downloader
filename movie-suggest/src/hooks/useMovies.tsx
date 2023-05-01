@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { IMovie } from "../interfaces";
 import instance from "../instance";
 import useScrollPage from "./useScrollPage";
+import useFetch from "./useFetch";
 
 export default function useMovies() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [movies, setMovies] = useState<IMovie[]>([]);
+  const { loading, error, data, dispatch } = useFetch<IMovie[]>();
   const { page, togglePageToOne } = useScrollPage();
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -21,7 +20,7 @@ export default function useMovies() {
   }
   const toggleUrl = (changedUrl: string) => {
     setUrl(changedUrl);
-    setMovies([]);
+    dispatch({ type: "success", result: [] });
     setTotalPages(0);
     togglePageToOne();
   };
@@ -32,20 +31,25 @@ export default function useMovies() {
         if (totalPages > 0 && totalPages === page) {
           return;
         }
-        setLoading(true);
-        setError("");
-        const { data } = await instance.get(url, {
+        dispatch({ type: "request" });
+        const response = await instance.get(url, {
           params: {
             page,
           },
           signal: controller.signal,
         });
-        setTotalPages(data.total_pages);
-        setMovies([...movies, ...data.results]);
+        setTotalPages(response.data.total_pages);
+        if (Array.isArray(data)) {
+          dispatch({
+            type: "success",
+            result: [...data, ...response.data.results],
+          });
+        } else {
+          dispatch({ type: "success", result: response.data.results });
+        }
       } catch (error) {
-        setError("Some error loading !");
+        dispatch({ type: "failure", error: "Some error occured" });
       } finally {
-        setLoading(false);
         controller.abort();
       }
     })();
@@ -53,7 +57,7 @@ export default function useMovies() {
   return {
     loading,
     error,
-    movies,
+    movies: data,
     movie,
     toggleModal,
     toggleUrl,

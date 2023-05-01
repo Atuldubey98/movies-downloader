@@ -49,7 +49,9 @@ export default function MovieModal({
       <div className="movie__modal">
         <div className="d-flex-end">
           <div className="movie__close">
-            <h2 className="name">{movie.title || movie.original_name} </h2>
+            <Link to={`/${movie.media_type}/${movie.id}`}>
+              <h2 className="name">{movie.title || movie.original_name} </h2>
+            </Link>
             <AiOutlineCloseCircle
               className="hover__icon"
               color="white"

@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import HeaderLinks from "../components/HeaderLinks";
 import LoadingIndi from "../components/LoadingIndi";
 import Movie from "../components/Movie";
@@ -22,7 +21,7 @@ export default function HomePage() {
       <HeaderLinks toggleUrl={toggleUrl} url={url} />
       <main>
         <div className="movies">
-          {movies.map((movie, index) => (
+          {movies?.map((movie) => (
             <Movie key={movie.id} movie={movie} onSetMovie={onSetMovie} />
           ))}
         </div>

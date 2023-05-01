@@ -18,6 +18,10 @@
   align-items: center;
   justify-content: space-between;
 }
+.movie__close a {
+  text-decoration: underline;
+  color: white;
+}
 .modal__btns {
   gap: 0.8rem;
   justify-content: space-between;
@@ -42,13 +46,13 @@
 .movie__modalDiv::-webkit-scrollbar {
   display: none;
 }
-.media__type{
+.media__type {
   text-transform: capitalize;
 }
 .get__torrent img {
   width: 1.5rem;
 }
-img {
+.modal__img span img {
   width: 100%;
   max-height: 30rem;
   object-fit: contain;
