@@ -9,7 +9,7 @@ class Yts extends TorrentSupper {
   }
   public async generateSearch(
     search: string,
-    _: number
+    page = 1
   ): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(
       `/browse-movies/${search}/all/all/1/latest/0/all`
