@@ -47,6 +47,10 @@ export default function useMovies() {
         } else {
           dispatch({ type: "success", result: response.data.results });
         }
+        localStorage.setItem(
+          "movie",
+          String(url.startsWith("/discover/movie"))
+        );
       } catch (error) {
         dispatch({ type: "failure", error: "Some error occured" });
       } finally {

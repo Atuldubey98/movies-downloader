@@ -42,6 +42,7 @@ export default function HeaderLinks({
       >
         Trending
       </li>
+
       <li
         onClick={() => toggleUrl(`/movie/top_rated`)}
         className={
@@ -50,6 +51,7 @@ export default function HeaderLinks({
       >
         Top Rated
       </li>
+
       {headerLinks.map((headerLink, index: number) => (
         <li
           onClick={() =>

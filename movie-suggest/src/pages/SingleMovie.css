@@ -4,9 +4,16 @@
   padding: 0.8rem;
   gap: 0.8rem;
 }
+.single {
+  display: grid;
+  gap: 1rem;
+}
 .single__background section {
   backdrop-filter: blur(5px);
   background: rgba(255, 255, 255, 0.2);
+}
+.single__youtubes {
+  margin: 0.8rem;
 }
 .single__poster {
   display: flex;

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import instance from "../instance";
 import { IMovieSingle } from "../interfaces";
 import useFetch from "./useFetch";
+import axios from "axios";
 
 export default function useSingleMovieTv() {
   const params = useParams();
@@ -15,8 +16,13 @@ export default function useSingleMovieTv() {
     (async () => {
       try {
         dispatch({ type: "request" });
-        const { data } = await instance.get(`movie/${id}`);
-        dispatch({ type: "success", result: data });
+        const [responseMovie, responseVideos] = await axios.all([
+          instance.get(`movie/${id}`),
+          instance.get(`movie/${id}/videos`),
+        ]);
+        const movie = responseMovie.data;
+        const youtubes = responseVideos.data.results;
+        dispatch({ type: "success", result: { ...movie, youtubes } });
       } catch (error) {
         dispatch({ type: "failure", error: "Movie Not found !" });
       }

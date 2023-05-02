@@ -1,20 +1,20 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import {
   AiOutlineCloseCircle,
   AiOutlineStar,
   AiTwotoneStar,
 } from "react-icons/ai";
+import { SiImdb } from "react-icons/si";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import { SearchContext } from "../SearchContext";
+import noimage from "../assets/noimage.svg";
+import utorrentimg from "../assets/utorrent.svg";
 import { imageUrl } from "../instance";
 import { IMovie } from "../interfaces";
-import utorrentimg from "../assets/utorrent.svg";
 import "./MovieModal.css";
-import noimage from "../assets/noimage.svg";
-import "react-lazy-load-image-component/src/effects/blur.css";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { SiImdb } from "react-icons/si";
 export default function MovieModal({
   movie,
   toggleModal,
@@ -26,6 +26,11 @@ export default function MovieModal({
 }) {
   const { favourites, saveToLocalStorage, removeFromLocalStorage } =
     useContext(SearchContext);
+  const media_type =
+    localStorage.getItem("movie") &&
+    Boolean(localStorage.getItem("movie")) === false
+      ? "tv"
+      : "movie";
   return (
     <ReactModal
       style={{
@@ -49,7 +54,7 @@ export default function MovieModal({
       <div className="movie__modal">
         <div className="d-flex-end">
           <div className="movie__close">
-            <Link to={`/${movie.media_type}/${movie.id}`}>
+            <Link to={`/${movie.media_type || media_type}/${movie.id}`}>
               <h2 className="name">{movie.title || movie.original_name} </h2>
             </Link>
             <AiOutlineCloseCircle

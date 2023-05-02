@@ -81,9 +81,22 @@ export interface IStreamLinkProps {
   index: number;
   magnetUrl: string;
 }
+export interface IUTubeVideo {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}
 
 export interface IMovieSingle {
   adult: boolean;
+  youtubes: IUTubeVideo[];
   backdrop_path: string;
   belongs_to_collection: IBelongsToCollection;
   budget: number;
@@ -137,6 +150,7 @@ export interface ISpokenLanguagesEntity {
 }
 export interface ITvSingle {
   adult: boolean;
+  youtubes: IUTubeVideo[];
   backdrop_path: string;
   created_by?: ICreatedByEntity[] | null;
   episode_run_time?: number[] | null;

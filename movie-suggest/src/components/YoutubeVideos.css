@@ -1,0 +1,26 @@
+.youtubes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.youtube__div {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+}
+.youtube__description {
+  margin-block: 0.8rem;
+}
+.youtube__description p {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+
+.youtube__description p .field {
+  font-weight: bold;
+}
+@media screen and (max-width: 720px) {
+  .youtube__div {
+    grid-template-columns: 1fr;
+  }
+}

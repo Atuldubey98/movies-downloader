@@ -8,6 +8,8 @@ import "./SingleTv.css";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import utorrentimg from "../assets/utorrent.svg";
+import axios from "axios";
+import YoutubeVideos from "../components/YoutubeVideos";
 
 export default function SingleTv() {
   const { loading, error, data, dispatch } = useFetch<ITvSingle>();
@@ -24,8 +26,13 @@ export default function SingleTv() {
     (async () => {
       try {
         dispatch({ type: "request" });
-        const { data } = await instance.get(`tv/${id}`);
-        dispatch({ type: "success", result: data });
+        const [responseMovie, responseVideos] = await axios.all([
+          instance.get(`tv/${id}`),
+          instance.get(`tv/${id}/videos`),
+        ]);
+        const tv = responseMovie.data;
+        const youtubes = responseVideos.data.results;
+        dispatch({ type: "success", result: { ...tv, youtubes } });
       } catch (error) {
         dispatch({ type: "failure", error: "Movie Not found !" });
       }
@@ -180,6 +187,12 @@ export default function SingleTv() {
             ) : null}
           </div>
         </section>
+      ) : null}
+      {data.youtubes.length > 0 ? (
+        <div className="single__youtubes">
+          <h1>Videos</h1>
+          <YoutubeVideos youtubes={data.youtubes} />
+        </div>
       ) : null}
     </main>
   ) : null;
