@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import { BiCameraMovie } from "react-icons/bi";
-
 import { PropagateLoader } from "react-spinners";
 import LoadingTorrents from "../components/LoadingTorrents";
 import TorrentResult from "../components/TorrentResult";

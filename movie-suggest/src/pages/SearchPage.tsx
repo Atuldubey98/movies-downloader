@@ -4,15 +4,20 @@ import Movie from "../components/Movie";
 import MovieModal from "../components/MovieModal";
 
 import { FcCancel } from "react-icons/fc";
-import LoadingIndi from "../components/LoadingIndi";
-import useSearchPage from "../hooks/useSearchPage";
+import Container from "../components/Container";
 import DataNotFound from "../components/DataNotFound";
+import LoadingIndi from "../components/LoadingIndi";
+import useModal from "../hooks/useModal";
+import useSearchPage from "../hooks/useSearchPage";
 export default function SearchPage() {
-  const { loading, movies, onSetMovie, toggleModal, movie, isModalOpen} =
-    useSearchPage();
-
+  const { loading, movies } = useSearchPage();
+  const { movie, toggleModal, isModalOpen, onSetMovie } = useModal();
   return (
-    <main>
+    <Container
+      toggleModal={toggleModal}
+      movie={movie}
+      isModalOpen={isModalOpen}
+    >
       {loading ? (
         <LoadingIndi loading={loading} />
       ) : movies.length === 0 ? (
@@ -28,14 +33,6 @@ export default function SearchPage() {
           <Movie movie={movie} key={movie.id} onSetMovie={onSetMovie} />
         ))}
       </div>
-
-      {movie ? (
-        <MovieModal
-          movie={movie}
-          modalIsOpen={isModalOpen}
-          toggleModal={toggleModal}
-        />
-      ) : null}
-    </main>
+    </Container>
   );
 }

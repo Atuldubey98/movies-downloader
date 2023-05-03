@@ -1,23 +1,19 @@
+import Container from "../components/Container";
 import HeaderLinks from "../components/HeaderLinks";
 import LoadingIndi from "../components/LoadingIndi";
 import Movie from "../components/Movie";
-import MovieModal from "../components/MovieModal";
+import useModal from "../hooks/useModal";
 import useMovies from "../hooks/useMovies";
 
 export default function HomePage() {
-  const {
-    loading,
-    movies,
-    movie,
-    toggleModal,
-    toggleUrl,
-    isModalOpen,
-    onSetMovie,
-    url,
-  } = useMovies();
-
+  const { loading, movies, toggleUrl, url } = useMovies();
+  const { movie, toggleModal, isModalOpen, onSetMovie } = useModal();
   return (
-    <>
+    <Container
+      movie={movie}
+      toggleModal={toggleModal}
+      isModalOpen={isModalOpen}
+    >
       <HeaderLinks toggleUrl={toggleUrl} url={url} />
       <main>
         <div className="movies">
@@ -26,14 +22,7 @@ export default function HomePage() {
           ))}
         </div>
         <LoadingIndi loading={loading} />
-        {movie ? (
-          <MovieModal
-            movie={movie}
-            modalIsOpen={isModalOpen}
-            toggleModal={toggleModal}
-          />
-        ) : null}
       </main>
-    </>
+    </Container>
   );
 }

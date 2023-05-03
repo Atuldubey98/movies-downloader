@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import { IMovie } from "../interfaces";
-import instance, { searchUrl } from "../instance";
+import { useContext, useEffect, useState } from "react";
 import { SearchContext } from "../SearchContext";
+import instance, { searchUrl } from "../instance";
 import useQuery from "./useQuery";
 import useScrollPage from "./useScrollPage";
 
@@ -12,11 +11,7 @@ export default function useSearchPage() {
   const query = useQuery();
   const [totalPages, setTotalPages] = useState<number>(0);
   const search = query.get("query") || "";
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [movie, setMovie] = useState<IMovie>();
-  function toggleModal() {
-    setIsModalOpen(!isModalOpen);
-  }
+
   useEffect(() => {
     if (totalPages > 0 && totalPages < page) {
       return;
@@ -45,16 +40,9 @@ export default function useSearchPage() {
     setTotalPages(0);
     togglePageToOne();
   }, [search]);
-  function onSetMovie(movie: IMovie) {
-    setMovie(movie);
-    toggleModal();
-  }
+
   return {
     loading,
     movies,
-    onSetMovie,
-    toggleModal,
-    movie,
-    isModalOpen,
   };
 }

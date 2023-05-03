@@ -10,6 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import utorrentimg from "../assets/utorrent.svg";
 import axios from "axios";
 import YoutubeVideos from "../components/YoutubeVideos";
+import PosterBackDropSingle from "../components/PosterBackDropSingle";
 
 export default function SingleTv() {
   const { loading, error, data, dispatch } = useFetch<ITvSingle>();
@@ -41,114 +42,26 @@ export default function SingleTv() {
   if (loading) {
     return <LoadingIndi loading={loading} />;
   }
+
   return data ? (
     <main className="single">
-      <div
-        style={{
-          background: `url("${imageUrl}${
-            data?.backdrop_path || data?.poster_path
-          }")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+      <PosterBackDropSingle
+        posterBack={{
+          backdrop_path: data.backdrop_path,
+          poster_path: data.poster_path,
+          original_name: data.original_name,
+          name: data.name,
+          genres: data.genres || [],
+          first_air_date: data.first_air_date,
+          tagline: data.tagline,
+          overview: data.overview,
+          spoken_languages: data.spoken_languages || [],
+          vote_average: data.vote_average,
+          number_of_seasons: data.number_of_seasons,
+          number_of_episodes: data.number_of_episodes,
+          original_language: data.original_language,
         }}
-        className="single__background"
-      >
-        <section>
-          <div className="single__poster">
-            <LazyLoadImage
-              effect="blur"
-              placeholderSrc={nomovie}
-              src={imageUrl + `${data?.poster_path || data?.backdrop_path}`}
-              alt={data?.original_name || data?.name}
-            />
-          </div>
-          <div className="single__posterDescription">
-            {data?.original_name || data?.name ? (
-              <h1>
-                {data?.original_name || data?.name}
-                {`(${data?.first_air_date.substring(0, 4)})`}
-              </h1>
-            ) : null}
-            <div className="single__about">
-              {data?.first_air_date ? (
-                <span>{data?.first_air_date} </span>
-              ) : null}
-              {data?.genres && data.genres.length > 0 ? (
-                <span>
-                  {" . "}
-                  {data?.genres?.map((genre) => genre.name).join(", ")}
-                </span>
-              ) : null}
-            </div>
-            {data?.tagline ? <p className="tagline">{data.tagline}</p> : null}
-            <div className="single__overview">
-              {data?.overview && data.overview.length > 0 ? (
-                <div className="overview">
-                  <h3>Overview</h3>
-                  <p>{data?.overview}</p>
-                </div>
-              ) : null}
-            </div>
-
-            <div className="single__btns">
-              <div
-                style={{
-                  background: `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(black ${calculate(
-                    data.vote_average || 0
-                  )}%, white 0)`,
-                }}
-                className="single__voteCount"
-              >
-                <span>{data?.vote_average.toFixed(2)}</span>
-                <progress value="25">75%</progress>
-              </div>
-            </div>
-            <div className="single__meta">
-              {data?.spoken_languages ? (
-                <div className="single__languages">
-                  <h3>Languages Available :</h3>
-                  <ul className="languages__list">
-                    {data.spoken_languages.map((language) => (
-                      <li key={language.iso_639_1} className="language">
-                        <p>{language.english_name}</p>
-                        <p>{language.name}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
-              {data?.original_language ? (
-                <div>
-                  <h3>Original Language: </h3>
-                  <p>{`${data?.original_language}`}</p>
-                </div>
-              ) : null}
-              {data?.number_of_seasons ? (
-                <div>
-                  <h3>No of seasons : </h3>
-                  <p>{`${data?.number_of_seasons}`}</p>
-                </div>
-              ) : null}
-              {data?.number_of_episodes ? (
-                <div>
-                  <h3>No of episodes : </h3>
-                  <p>{`${data?.number_of_episodes}`}</p>
-                </div>
-              ) : null}
-            </div>
-            <div className="single__btns around">
-              <Link
-                className="btn d-flex-center get__torrent"
-                to={`/torrents?search=${data.name || data.original_name}`}
-              >
-                <img src={utorrentimg} alt="torrent" /> Get Torrent
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
+      />
       {Array.isArray(data.seasons) ? (
         <section className="single__seasons">
           <h2>Seasons </h2>

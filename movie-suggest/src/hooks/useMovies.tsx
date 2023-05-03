@@ -8,16 +8,10 @@ export default function useMovies() {
   const { loading, error, data, dispatch } = useFetch<IMovie[]>();
   const { page, togglePageToOne } = useScrollPage();
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const [movie, setMovie] = useState<IMovie>();
   const [url, setUrl] = useState("/trending/all/week?language=en-US");
-  function toggleModal() {
-    setIsModalOpen(!isModalOpen);
-  }
-  function onSetMovie(movie: IMovie) {
-    setMovie(movie);
-    toggleModal();
-  }
+
   const toggleUrl = (changedUrl: string) => {
     setUrl(changedUrl);
     dispatch({ type: "success", result: [] });
@@ -63,10 +57,7 @@ export default function useMovies() {
     error,
     movies: data,
     movie,
-    toggleModal,
     toggleUrl,
-    onSetMovie,
-    isModalOpen,
     url,
   };
 }
