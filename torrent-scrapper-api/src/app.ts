@@ -17,9 +17,9 @@ import OneThreeThreeSeven from "./torrents/x1337";
 import Yts from "./torrents/yts";
 import { errorHandler, logErrors } from "./utils/errorHandler";
 import { downLoadMovieHeaders, movieHeaders } from "./utils/movieHeaders";
-import { toEntry } from "./utils/streamUtils";
-import { searchAndPage } from "./utils/sanitizeText";
 import { sortMoviesOnSeeds } from "./utils/operateOnMovies";
+import { getMagnetAndVideoUrl, searchAndPage } from "./utils/sanitizeText";
+import { toEntry } from "./utils/streamUtils";
 
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
@@ -50,7 +50,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.get("/health", (_: Request, res: Response) => {
+app.get("/api/v1/health", (_: Request, res: Response) => {
   return res.status(200).send("Server is healthy");
 });
 
@@ -66,12 +66,12 @@ app.get(
     const { search, page } = searchAndPage(req);
     try {
       if (search.length === 0) {
-        debug(`Search not found !`);
+        console.log(`Search not found !`);
         next(createHttpError(404, "NOT_FOUND"));
       } else {
         const responses = await Promise.allSettled([
           oneThreeThreeSeven.generateResults(search, page),
-          yts.generateResults(search, page),
+          yts.generateResults(search),
           pirateBay.generateResults(search, page),
         ]);
         const movies: ITorrentMovie[] = responses
@@ -102,13 +102,13 @@ app.get(
     const initialTime = performance.now();
     const { search, page } = searchAndPage(req);
 
-    if (search.length === 0) {
-      debug(`Search not found !`);
-      next(createHttpError(404, "NOT_FOUND"));
-    } else {
-      try {
+    try {
+      if (search.length === 0) {
+        debug(`Search not found !`);
+        next(createHttpError(404, "NOT_FOUND"));
+      } else {
         const { movies, totalPages }: IResultResponse =
-          await yts.generateResults(search, page);
+          await yts.generateResults(search);
         const time = (performance.now() - initialTime) / 1000;
         return res.status(200).send({
           time,
@@ -117,9 +117,9 @@ app.get(
           page,
           totalPages,
         });
-      } catch (error) {
-        next(error);
       }
+    } catch (error) {
+      next(error);
     }
   }
 );
@@ -165,7 +165,7 @@ app.get(
     const { search, page } = searchAndPage(req);
 
     if (search.length === 0) {
-      debug(`Search not found !`);
+      console.log(`Search not found !`);
       next(createHttpError(404, "NOT_FOUND"));
     } else {
       try {
@@ -189,29 +189,29 @@ app.get(
   "/api/v1/torrent/files",
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const magnetUrl =
-        typeof req.query.magnetUrl === "string" ? req.query.magnetUrl : "";
+      const { magnetUrl } = getMagnetAndVideoUrl(req);
       if (!magnetUrl || !magnetUrl.startsWith("magnet")) {
         next(createHttpError(404, "NOT_FOUND"));
+      } else {
+        const engine = torrentStream(magnetUrl);
+        engine.on("ready", () => {
+          res.write(
+            JSON.stringify(
+              {
+                files: engine.files.map(toEntry),
+                totalLength: bytes(
+                  engine.files.reduce((prevFile, currFile) => {
+                    return prevFile + currFile.length;
+                  }, 0)
+                ),
+              },
+              null,
+              "  "
+            )
+          );
+          res.end();
+        });
       }
-      const engine = torrentStream(magnetUrl);
-      engine.on("ready", () => {
-        res.write(
-          JSON.stringify(
-            {
-              files: engine.files.map(toEntry),
-              totalLength: bytes(
-                engine.files.reduce((prevFile, currFile) => {
-                  return prevFile + currFile.length;
-                }, 0)
-              ),
-            },
-            null,
-            "  "
-          )
-        );
-        res.end();
-      });
     } catch (error) {
       next(error);
     }
@@ -223,44 +223,41 @@ app.get(
   (req: Request, res: Response, next: NextFunction) => {
     const range = req.headers.range;
     try {
-      const videoPath =
-        typeof req.query.videoPath === "string" ? req.query.videoPath : "";
-
-      const magnetUrl =
-        typeof req.query.magnetUrl === "string" ? req.query.magnetUrl : "";
+      const { magnetUrl, videoPath } = getMagnetAndVideoUrl(req);
       if (videoPath.length === 0 || magnetUrl.length === 0) {
         next(createHttpError(404, "NOT_FOUND"));
-      }
-      const engine = torrentStream(magnetUrl);
-      engine.on("ready", () => {
-        const file: TorrentStream.TorrentFile = engine.files.find(
-          (file) => file.name === videoPath
-        );
-        if (!file) {
-          next(createHttpError(404, "NOT_FOUND"));
-        }
-        if (range) {
-          const { headers, start, end } = movieHeaders(range, file);
-          res.writeHead(206, headers);
-          pump(
-            file.createReadStream({
-              start,
-              end,
-            }),
-            res
+      } else {
+        const engine = torrentStream(magnetUrl);
+        engine.on("ready", () => {
+          const file: TorrentStream.TorrentFile = engine.files.find(
+            (file) => file.name === videoPath
           );
-        } else {
-          const head = downLoadMovieHeaders(file.name);
-          res.writeHead(200, head);
-          pump(file.createReadStream(), res);
-        }
-      });
+          if (!file) {
+            next(createHttpError(404, "NOT_FOUND"));
+          }
+          if (range) {
+            const { headers, start, end } = movieHeaders(range, file);
+            res.writeHead(206, headers);
+            pump(
+              file.createReadStream({
+                start,
+                end,
+              }),
+              res
+            );
+          } else {
+            const head = downLoadMovieHeaders(file.name);
+            res.writeHead(200, head);
+            pump(file.createReadStream(), res);
+          }
+        });
+      }
     } catch (error) {
       next(error);
     }
   }
 );
-app.use((req: Request, _: Response, next: NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   next(createHttpError(404, "NOT_FOUND"));
 });
 app.use(logErrors);

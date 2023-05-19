@@ -7,17 +7,24 @@ export function logErrors(
   res: Response,
   next: NextFunction
 ) {
-  console.error(err.message);
   next(err);
 }
 
-export function errorHandler(err: Error, req: Request, res: Response) {
+export function errorHandler(
+  error: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  let errorMessage = "An unknown error occured.";
   let statusCode = 500;
-  if (isHttpError(err)) {
-    statusCode = err.statusCode;
+  if (isHttpError(error)) {
+    errorMessage = error.message;
+    statusCode = error.statusCode;
   }
-  if (isAxiosError(err)) {
-    statusCode = err.response.status;
+  if (isAxiosError(error)) {
+    errorMessage = error.response.data;
+    statusCode = 400;
   }
-  return res.status(statusCode).send(err);
+  return res.status(statusCode).send(errorMessage);
 }

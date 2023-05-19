@@ -21,3 +21,18 @@ export function searchAndPage(req: Request): { search: string; page: number } {
     page,
   };
 }
+
+export function getMagnetAndVideoUrl(req: Request): {
+  videoPath: string;
+  magnetUrl: string;
+} {
+  const videoPath =
+    typeof req.query.videoPath === "string" ? req.query.videoPath : "";
+
+  const magnetUrl =
+    typeof req.query.magnetUrl === "string" ? req.query.magnetUrl : "";
+  return {
+    videoPath,
+    magnetUrl,
+  };
+}

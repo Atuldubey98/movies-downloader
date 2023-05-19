@@ -7,10 +7,7 @@ class Yts extends TorrentSupper {
   constructor() {
     super("yts");
   }
-  public async generateSearch(
-    search: string,
-    page = 1
-  ): Promise<ITorrentMovie[]> {
+  public async generateSearch(search: string): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(
       `/browse-movies/${search}/all/all/1/latest/0/all`
     );
@@ -56,14 +53,8 @@ class Yts extends TorrentSupper {
   /**
    * async generateResults for torrent
    */
-  public async generateResults(
-    search: string,
-    page: number
-  ): Promise<IResultResponse> {
-    let movies: ITorrentMovie[] = await this.generateSearch(search, page);
-    if (page > 1) {
-      return { movies: [], totalPages: 1 };
-    }
+  public async generateResults(search: string): Promise<IResultResponse> {
+    let movies: ITorrentMovie[] = await this.generateSearch(search);
     const responses = await Promise.allSettled(
       movies.map((movie) => this.getSingleTorrent(movie.url))
     );
