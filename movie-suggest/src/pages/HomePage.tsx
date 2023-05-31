@@ -6,7 +6,7 @@ import useModal from "../hooks/useModal";
 import useMovies from "../hooks/useMovies";
 
 export default function HomePage() {
-  const { loading, movies, toggleUrl, url } = useMovies();
+  const { loading, movies, toggleUrl, url, setElement } = useMovies();
   const { movie, toggleModal, isModalOpen, onSetMovie } = useModal();
   return (
     <Container
@@ -17,9 +17,18 @@ export default function HomePage() {
       <HeaderLinks toggleUrl={toggleUrl} url={url} />
       <main>
         <div className="movies">
-          {movies?.map((movie) => (
-            <Movie key={movie.id} movie={movie} onSetMovie={onSetMovie} />
-          ))}
+          {movies?.map((movie, index) =>
+            index === movies.length - 1 ? (
+              <Movie
+                ref={setElement}
+                key={movie.id}
+                movie={movie}
+                onSetMovie={onSetMovie}
+              />
+            ) : (
+              <Movie key={movie.id} movie={movie} onSetMovie={onSetMovie} />
+            )
+          )}
         </div>
         <LoadingIndi loading={loading} />
       </main>

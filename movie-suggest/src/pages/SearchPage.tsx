@@ -10,7 +10,7 @@ import LoadingIndi from "../components/LoadingIndi";
 import useModal from "../hooks/useModal";
 import useSearchPage from "../hooks/useSearchPage";
 export default function SearchPage() {
-  const { loading, movies } = useSearchPage();
+  const { loading, movies, setElement } = useSearchPage();
   const { movie, toggleModal, isModalOpen, onSetMovie } = useModal();
   return (
     <Container
@@ -29,9 +29,18 @@ export default function SearchPage() {
         />
       ) : null}
       <div className="movies">
-        {movies.map((movie) => (
-          <Movie movie={movie} key={movie.id} onSetMovie={onSetMovie} />
-        ))}
+        {movies.map((movie, index) =>
+          index === movies.length - 1 ? (
+            <Movie
+              ref={setElement}
+              movie={movie}
+              key={movie.id}
+              onSetMovie={onSetMovie}
+            />
+          ) : (
+            <Movie movie={movie} key={movie.id} onSetMovie={onSetMovie} />
+          )
+        )}
       </div>
     </Container>
   );

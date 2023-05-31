@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { IMovie } from "../interfaces";
+import { useEffect, useState } from "react";
 import instance from "../instance";
-import useScrollPage from "./useScrollPage";
+import { IMovie } from "../interfaces";
 import useFetch from "./useFetch";
+import useScrollPage from "./useScrollPage";
+import useInfiniteScroll from "./useInfiniteScroll";
 
 export default function useMovies() {
   const { loading, error, data, dispatch } = useFetch<IMovie[]>();
-  const { page, togglePageToOne } = useScrollPage();
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [hasNext, setHasNext] = useState(true);
+  const { page, setElement, togglePagToOne } = useInfiniteScroll(hasNext);
+  console.log(page);
 
-  const [movie, setMovie] = useState<IMovie>();
   const [url, setUrl] = useState("/trending/all/week?language=en-US");
 
   const toggleUrl = (changedUrl: string) => {
     setUrl(changedUrl);
     dispatch({ type: "success", result: [] });
-    setTotalPages(0);
-    togglePageToOne();
+    togglePagToOne();
   };
   const controller = new AbortController();
   useEffect(() => {
     (async () => {
       try {
-        if (totalPages > 0 && totalPages === page) {
-          return;
-        }
         dispatch({ type: "request" });
         const response = await instance.get(url, {
           params: {
@@ -32,7 +29,7 @@ export default function useMovies() {
           },
           signal: controller.signal,
         });
-        setTotalPages(response.data.total_pages);
+
         if (Array.isArray(data)) {
           dispatch({
             type: "success",
@@ -41,6 +38,7 @@ export default function useMovies() {
         } else {
           dispatch({ type: "success", result: response.data.results });
         }
+        setHasNext(response.data.total_pages > page);
         localStorage.setItem(
           "movie",
           String(url.startsWith("/discover/movie"))
@@ -56,8 +54,8 @@ export default function useMovies() {
     loading,
     error,
     movies: data,
-    movie,
     toggleUrl,
     url,
+    setElement,
   };
 }
