@@ -10,12 +10,8 @@ export default function useModal() {
 
   const onSetMovie = useCallback((mo: IMovie) => {
     setMovie(mo);
+    setIsModalOpen(true);
   }, []);
-  useEffect(() => {
-    if (movie) {
-      toggleModal();
-    }
-  }, [movie]);
   return {
     toggleModal,
     onSetMovie,

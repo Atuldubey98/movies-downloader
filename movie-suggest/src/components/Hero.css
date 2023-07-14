@@ -2,9 +2,6 @@
   position: relative;
   max-height: 500px;
 }
-.hero > img {
-  filter: brightness(50%) blur(2px);
-}
 .hero__text {
   position: absolute;
   top: 40%;
