@@ -1,14 +1,16 @@
 .hero {
-  position: relative;
-  max-height: 500px;
+  position: absolute;
+}
+.hero > img {
+  filter: blur(5px) brightness(50%);
 }
 .hero__text {
   position: absolute;
-  top: 40%;
-  left: 25%;
+  top: 100px;
+  left: 30%;
   margin: auto;
 }
 .hero__text > h1 {
   text-align: center;
-  font-size: 10vw;
+  font-size: 8vw;
 }

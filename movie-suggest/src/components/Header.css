@@ -49,6 +49,11 @@
   margin-inline: 0.2rem;
   border-radius: 0.3rem;
 }
+.search__form {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+}
 .search__div input {
   border: none;
   outline: none;
