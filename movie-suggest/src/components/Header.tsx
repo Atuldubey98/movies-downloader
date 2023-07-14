@@ -31,7 +31,7 @@ export default function Header() {
         <div className="banner">
           <Link className="d-flex-center" to={"/"}>
             <h1>Moviesss</h1>
-            <img src={banner} alt="banner" />
+            <img width={30} height={30} src={banner} alt="banner" />
           </Link>
         </div>
         <div className="search__form">

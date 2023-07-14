@@ -9,8 +9,6 @@ export default function useMovies() {
   const { loading, error, data, dispatch } = useFetch<IMovie[]>();
   const [hasNext, setHasNext] = useState(true);
   const { page, setElement, togglePagToOne } = useInfiniteScroll(hasNext);
-  console.log(page);
-
   const [url, setUrl] = useState("/trending/all/week?language=en-US");
 
   const toggleUrl = (changedUrl: string) => {

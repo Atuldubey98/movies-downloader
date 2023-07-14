@@ -1,20 +1,20 @@
 .movie {
-  max-width: 450px;
   position: relative;
   cursor: pointer;
 }
 .movie__img {
+  background-color: #2b2b2b;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 0.5rem;
 }
+
 .movie__img img {
-  width: 100%;
-  max-height: 20rem;
   object-fit: contain;
   border-radius: 0.5rem;
 }
-.movie__stats span{
+.movie__stats span {
   gap: 0.3rem;
 }
 .movie__statsIcons {

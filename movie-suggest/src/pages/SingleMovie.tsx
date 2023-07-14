@@ -1,22 +1,13 @@
 import { FcCancel } from "react-icons/fc";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Link } from "react-router-dom";
-import nomovie from "../assets/noimage.svg";
-import utorrentimg from "../assets/utorrent.svg";
 import DataNotFound from "../components/DataNotFound";
 import LoadingIndi from "../components/LoadingIndi";
-import useSingleMovieTv from "../hooks/useSingleMovieTv";
-import { imageUrl } from "../instance";
-import "./SingleMovie.css";
-import YoutubeVideos from "../components/YoutubeVideos";
 import PosterBackDropSingle from "../components/PosterBackDropSingle";
+import YoutubeVideos from "../components/YoutubeVideos";
+import useSingleMovieTv from "../hooks/useSingleMovieTv";
+import "./SingleMovie.css";
 
 export default function SingleMovie() {
   const { loading, error, data } = useSingleMovieTv();
-
-  function calculate(votes: number) {
-    return (votes / 10) * 100;
-  }
   if (loading) {
     return <LoadingIndi loading={loading} />;
   }

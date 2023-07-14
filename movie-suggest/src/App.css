@@ -1,11 +1,11 @@
 .movies {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.8rem;
+  gap: 0.5rem;
   padding: 0.5rem;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 768px) {
   .movies {
     grid-template-columns: 1fr 1fr;
     padding: 0.2rem;

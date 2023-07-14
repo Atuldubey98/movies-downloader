@@ -5,8 +5,6 @@ import {
   AiTwotoneStar,
 } from "react-icons/ai";
 import { SiImdb } from "react-icons/si";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import { SearchContext } from "../SearchContext";
@@ -31,6 +29,11 @@ export default function MovieModal({
     Boolean(localStorage.getItem("movie")) === false
       ? "tv"
       : "movie";
+  const imageToRender =
+    movie.backdrop_path || movie.poster_path
+      ? imageUrl + `${movie.backdrop_path || movie.poster_path}`
+      : noimage;
+
   return (
     <ReactModal
       style={{
@@ -94,15 +97,12 @@ export default function MovieModal({
         </div>
         <div className="movie__content">
           <div className="modal__img">
-            {movie.backdrop_path || movie.poster_path ? (
-              <LazyLoadImage
-                placeholderSrc={noimage}
-                src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
-                alt={movie.title || movie.original_name}
-              />
-            ) : (
-              <img loading="lazy" src={noimage} alt="Loading" />
-            )}
+            <img
+              src={imageToRender}
+              alt="Alternative text"
+              width={"100%"}
+              height={280}
+            />
           </div>
           <div className="movie__details">
             <div className="detail">

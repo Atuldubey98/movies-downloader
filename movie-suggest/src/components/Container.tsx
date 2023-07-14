@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import MovieModal from "./MovieModal";
+import React from "react";
 import { IMovie } from "../interfaces";
+import MovieModal from "./MovieModal";
 interface ContainerProps {
   children: React.ReactNode;
   movie?: IMovie;

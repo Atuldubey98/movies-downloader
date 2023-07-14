@@ -1,4 +1,3 @@
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 import nomovie from "../assets/noimage.svg";
 import utorrentimg from "../assets/utorrent.svg";
@@ -42,6 +41,11 @@ export default function PosterBackDropSingle({
     original_language,
     runtime,
   } = posterBack;
+  const imageToRender =
+    backdrop_path || poster_path
+      ? imageUrl + `${backdrop_path || poster_path}`
+      : nomovie;
+
   return (
     <div
       style={{
@@ -54,12 +58,7 @@ export default function PosterBackDropSingle({
     >
       <section>
         <div className="single__poster">
-          <LazyLoadImage
-            effect="blur"
-            placeholderSrc={nomovie}
-            src={imageUrl + `${poster_path || backdrop_path}`}
-            alt={original_name || name}
-          />
+          <img src={imageToRender} alt="Alternative text" width={"100%"} />
         </div>
         <div className="single__posterDescription">
           {original_name || name ? (

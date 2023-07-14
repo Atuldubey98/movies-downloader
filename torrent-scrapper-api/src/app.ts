@@ -20,7 +20,7 @@ import { downLoadMovieHeaders, movieHeaders } from "./utils/movieHeaders";
 import { sortMoviesOnSeeds } from "./utils/operateOnMovies";
 import { getMagnetAndVideoUrl, searchAndPage } from "./utils/sanitizeText";
 import { toEntry } from "./utils/streamUtils";
-
+import compression from "compression";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -32,9 +32,14 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+app.use(compression());
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../../movie-suggest/dist")));
+app.use(
+  express.static(path.join(__dirname, "../../movie-suggest/dist"), {
+    maxAge: "1y",
+  })
+);
 app.use(
   helmet({
     contentSecurityPolicy: false,

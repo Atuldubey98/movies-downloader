@@ -1,23 +1,18 @@
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import nomovie from "../assets/noimage.svg";
 import LoadingIndi from "../components/LoadingIndi";
+import PosterBackDropSingle from "../components/PosterBackDropSingle";
+import YoutubeVideos from "../components/YoutubeVideos";
 import useFetch from "../hooks/useFetch";
 import instance, { imageUrl } from "../instance";
 import { ITvSingle } from "../interfaces";
 import "./SingleTv.css";
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import utorrentimg from "../assets/utorrent.svg";
-import axios from "axios";
-import YoutubeVideos from "../components/YoutubeVideos";
-import PosterBackDropSingle from "../components/PosterBackDropSingle";
 
 export default function SingleTv() {
-  const { loading, error, data, dispatch } = useFetch<ITvSingle>();
+  const { loading, data, dispatch } = useFetch<ITvSingle>();
   const [filter, setFilter] = useState<boolean>(false);
-  function calculate(votes: number) {
-    return (votes / 10) * 100;
-  }
   const params = useParams();
   const id: number =
     params.id && params.id.length > 0 && !isNaN(Number(params.id))
@@ -42,7 +37,10 @@ export default function SingleTv() {
   if (loading) {
     return <LoadingIndi loading={loading} />;
   }
-
+  const imageToRender =
+    data?.backdrop_path || data?.poster_path
+      ? imageUrl + `${data.backdrop_path || data?.poster_path}`
+      : nomovie;
   return data ? (
     <main className="single">
       <PosterBackDropSingle
@@ -72,10 +70,10 @@ export default function SingleTv() {
               )
               .map((season, index) => (
                 <li key={index}>
-                  <LazyLoadImage
-                    placeholderSrc={nomovie}
-                    src={imageUrl + season.poster_path}
-                    alt={season.name}
+                  <img
+                    src={imageToRender}
+                    alt="Alternative text"
+                    width={"100%"}
                   />
 
                   <div className="season__description">
@@ -109,10 +107,4 @@ export default function SingleTv() {
       ) : null}
     </main>
   ) : null;
-}
-function toHoursAndMinutes(totalMinutes: number) {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-
-  return { hours, minutes };
 }

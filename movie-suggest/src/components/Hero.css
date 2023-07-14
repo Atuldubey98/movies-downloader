@@ -1,0 +1,14 @@
+.hero {
+  position: relative;
+  max-height: 500px;
+}
+.hero__text {
+  position: absolute;
+  top: 40%;
+  left: 25%;
+  margin: auto;
+}
+.hero__text > h1 {
+  text-align: center;
+  font-size: 10vw;
+}

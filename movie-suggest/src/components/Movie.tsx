@@ -1,13 +1,11 @@
-import { LegacyRef, Ref, forwardRef, memo } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import { LegacyRef, forwardRef, memo } from "react";
+import { SiImdb } from "react-icons/si";
 import TextTruncate from "react-text-truncate";
 import like from "../assets/like.svg";
 import noimage from "../assets/noimage.svg";
 import { imageUrl } from "../instance";
 import { IMovie } from "../interfaces";
 import "./Movie.css";
-import { SiImdb } from "react-icons/si";
 type MovieProps = {
   movie: IMovie;
   onSetMovie?: (paramMovie: IMovie) => void;
@@ -16,6 +14,11 @@ type MovieProps = {
 const Movie = forwardRef(
   (props: MovieProps, ref: LegacyRef<HTMLDivElement>) => {
     const { onSetMovie, movie } = props;
+    const imageToRender =
+      movie.backdrop_path || movie.poster_path
+        ? imageUrl + `${movie.backdrop_path || movie.poster_path}`
+        : noimage;
+
     return (
       <div
         ref={ref}
@@ -27,15 +30,7 @@ const Movie = forwardRef(
         className="movie"
       >
         <div className="movie__img">
-          {movie.backdrop_path || movie.poster_path ? (
-            <LazyLoadImage
-              effect="blur"
-              src={imageUrl + `${movie.backdrop_path || movie.poster_path}`}
-              alt={movie.title || movie.original_name}
-            />
-          ) : (
-            <img loading="lazy" src={noimage} alt="Loading" />
-          )}
+          <img src={imageToRender} alt="Alternative text" width={"100%"} />
         </div>
         <div className="movie__about">
           <TextTruncate
@@ -47,7 +42,8 @@ const Movie = forwardRef(
           />
           <div className="movie__stats">
             <span className="d-flex-center">
-              <img src={like} alt="like" /> {movie.vote_count}
+              <img width={30} height={30} src={like} alt="like" />{" "}
+              {movie.vote_count}
             </span>
             <div className="d-flex-center movie__statsIcons">
               <span>{movie.release_date}</span>
