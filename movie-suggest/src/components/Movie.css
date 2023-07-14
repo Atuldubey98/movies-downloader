@@ -8,6 +8,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.5rem;
+  min-height: 13rem;
+  width: 100%;
 }
 
 .movie__img img {
