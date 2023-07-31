@@ -1,0 +1,31 @@
+version: "3"
+services:
+  react-app:
+    image: react-app
+    build: ./movies-suggest/
+    volumes:
+      - ./movie-suggest/:/usr/src/app
+      - /usr/src/app/node_modules
+    stdin_open: true
+    env_file:
+      - .env
+    ports:
+      - "5173:5173"
+    networks:
+      - mern-app
+
+  api-server:
+    image: api-server
+    build: torrent-scrapper-api
+    volumes:
+      - ./torrent-scrapper-api/:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+    networks:
+      - mern-app
+networks:
+  mern-app:
+    driver: bridge

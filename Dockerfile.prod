@@ -1,0 +1,11 @@
+FROM node:14-slim
+#specify working directory
+WORKDIR /usr/src/app
+
+# Copy the package json file
+COPY ./package*.json ./
+
+COPY . .
+RUN npm run build
+EXPOSE 9000
+CMD [ "npm","start" ]
