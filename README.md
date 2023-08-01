@@ -85,3 +85,10 @@ Install my-project with npm
 - Ratings of all the movies
 - Cross platform
 
+## Deploying on render
+
+- Create a .env file in the project folder like .env.production
+- Use Docker to create a project in Render
+- Now in Dockerfile path write ./Dockerfile.prod
+- Deploy the service.
+
