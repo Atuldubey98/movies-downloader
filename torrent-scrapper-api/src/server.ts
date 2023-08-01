@@ -2,7 +2,7 @@ import app from "./app";
 import cluster from "cluster";
 import os from "os";
 import { createServer } from "http";
-const PORT: number = Number(process.env.PORT) || 9000;
+const PORT: number = Number(process.env.VITE_API_PORT) || 9000;
 
 if (cluster.isPrimary) {
   const noOfCpus = os.cpus().length;

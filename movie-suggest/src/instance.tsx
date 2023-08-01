@@ -6,7 +6,9 @@ const instance = axios.create({
     api_key: import.meta.env.VITE_API_KEY,
   },
 });
-export const baseURL = import.meta.env.VITE_TORRENT_URL;
+export const baseURL = import.meta.env.DEV
+  ? `http://${window.location.hostname}:${import.meta.env.VITE_API_PORT}`
+  : window.location.origin;
 export const torrentInstance = axios.create({
   baseURL,
 });
