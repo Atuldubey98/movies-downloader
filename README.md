@@ -89,6 +89,7 @@ Install my-project with npm
 
 - Create a .env file in the project folder like .env.production
 - Use Docker to create a project in Render
+- In Health check path write /api/v1/health
 - Now in Dockerfile path write ./Dockerfile.prod
 - Deploy the service.
 
