@@ -78,7 +78,7 @@ app.get(
           oneThreeThreeSeven.generateResults(search, page),
           yts.generateResults(search),
           pirateBay.generateResults(search, page),
-        ]);
+        ]);        
         const movies: ITorrentMovie[] = responses
           .map((response) =>
             response.status === "fulfilled" ? response.value.movies : []

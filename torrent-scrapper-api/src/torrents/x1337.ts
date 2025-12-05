@@ -13,7 +13,7 @@ class OneThreeThreeSeven extends TorrentSupper {
     if (!search) {
       throw new Error("Search is not a string");
     }
-    const $: CheerioAPI = await this.getPageContent(`search/${search}/${page}`);
+    const $: CheerioAPI = await this.getPageContent(`search?q=${search}&page=${page}`);
     return $;
   }
   /**
@@ -87,9 +87,7 @@ class OneThreeThreeSeven extends TorrentSupper {
     let movies: ITorrentMovie[] = [];
     searchResultsTable.each((_, element) => {
       const name: string = $(element).find("td").filter(".name").text().trim();
-      const url: string =
-        this.url +
-        $(element).find("td.coll-1.name > a:nth-child(2)").attr("href");
+      const url: string = $(element).find("td.coll-1.name > a:nth-child(2)").attr("href");
       const seeders: string = $(element)
         .find("td")
         .filter(".seeds")

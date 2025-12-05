@@ -9,7 +9,7 @@ class Yts extends TorrentSupper {
   }
   public async generateSearch(search: string): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(
-      `/browse-movies/${search}/all/all/1/latest/0/all`
+      `/browse-movies?search=${search}`
     );
 
     const ytsDiv = $(
@@ -18,7 +18,7 @@ class Yts extends TorrentSupper {
 
     const movies: ITorrentMovie[] = [];
     ytsDiv.each((_, element) => {
-      const url = $(element).find("a").attr("href");
+      const url = this.url+$(element).find("a").attr("href");
       const poster = $(element).find("a > figure > img").attr("src");
       const name = $(element).find("div.browse-movie-bottom > a").text();
       const year = $(element).find("div.browse-movie-year").text();

@@ -5,9 +5,9 @@ class TorrentSupper {
   public url: string;
   public axiosInstance: Axios;
   private urlMap: { [key: string]: string } = {
-    x1337: "https://www.1337xx.to",
-    yts: "https://yts.mx",
-    pirateBay: "https://thepiratebay10.org",
+    x1337: "https://1337x.pro",
+    yts: "https://www.yts-official.cc",
+    pirateBay: "https://thepibay.online",
   };
   constructor(filename: string) {
     this.url = this.urlMap[filename];

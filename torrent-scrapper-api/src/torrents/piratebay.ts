@@ -12,8 +12,8 @@ class PirateBay extends TorrentSupper {
     page = 1
   ): Promise<IResultResponse> {
     const $: CheerioAPI = await super.getPageContent(
-      `/search/${search}/1/99/${page}`
-    );
+      `/search/${search}/1/99/0`
+    );    
     const table = $("#searchResult > tbody > tr");
     const totalPagesDiv = $(
       `#searchResult > tbody > tr:nth-child(${table.length-1}) > td`
