@@ -31,7 +31,7 @@ export default function MovieModal({
       : "movie";
   const imageToRender =
     movie.backdrop_path || movie.poster_path
-      ? imageUrl + `${movie.backdrop_path || movie.poster_path}`
+      ? imageUrl + `${movie.poster_path || movie.backdrop_path}`
       : noimage;
 
   return (
@@ -100,7 +100,7 @@ export default function MovieModal({
             <img
               src={imageToRender}
               alt="Alternative text"
-              width={"100%"}
+             
               height={280}
             />
           </div>
