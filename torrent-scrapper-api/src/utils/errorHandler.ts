@@ -23,7 +23,7 @@ export function errorHandler(
     statusCode = error.statusCode;
   }
   if (isAxiosError(error)) {
-    errorMessage = error.response.data;
+    errorMessage = error?.response?.data;
     statusCode = 400;
   }
   return res.status(statusCode).send(errorMessage);

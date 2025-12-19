@@ -1,4 +1,4 @@
-import { CheerioAPI } from "cheerio";
+import { CheerioAPI, load } from "cheerio";
 import ITorrentMovie from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
 import IResultResponse from "../interfaces/IResultResponse";
@@ -55,6 +55,12 @@ class OneThreeThreeSeven extends TorrentSupper {
       screenshot,
     };
   }
+  public async getMagnetUrl(url: string) {
+    const response = await this.axiosInstance.get(url);
+    const $: CheerioAPI = load(response.data);
+    const magnet = $("#openPopup").attr("href");
+    return magnet;
+  }
   public async generateResults(
     search: string,
     page = 1
@@ -68,8 +74,7 @@ class OneThreeThreeSeven extends TorrentSupper {
       `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${totalPagesLi.length}) > a`
     ).text();
     const totalPagesStrCheck2 = $(
-      `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${
-        totalPagesLi.length - 1
+      `body > main > div > div > div > div.box-info-detail.inner-table > div.pagination > ul > li:nth-child(${totalPagesLi.length - 1
       }) > a`
     ).text();
     let totalPagesStr = isNaN(Number(totalPagesStrCheck1))
@@ -85,9 +90,10 @@ class OneThreeThreeSeven extends TorrentSupper {
 
     const totalPages = Number(totalPagesStr);
     let movies: ITorrentMovie[] = [];
+    const movieData: Array<{ name: string; currentMovieUrl: string; seeders: string; leechers: string; size: string }> = [];
     searchResultsTable.each((_, element) => {
       const name: string = $(element).find("td").filter(".name").text().trim();
-      const url: string = $(element).find("td.coll-1.name > a:nth-child(2)").attr("href");
+      const currentMovieUrl: string = $(element).find("td.coll-1.name > a:nth-child(2)").attr("href");
       const seeders: string = $(element)
         .find("td")
         .filter(".seeds")
@@ -99,8 +105,12 @@ class OneThreeThreeSeven extends TorrentSupper {
         .text()
         .trim();
       const size: string = $(element).find("td").filter(".size").text().trim();
-      movies.push({ name, url, seeders, leechers, size });
+      movieData.push({ name, currentMovieUrl, seeders, leechers, size });
     });
+    const moviePromises = movieData.map(({ name, currentMovieUrl, seeders, leechers, size }) =>
+      this.getMagnetUrl(currentMovieUrl || "").then((url) => ({ name, url, seeders, leechers, size }))
+    );
+    movies = await Promise.all(moviePromises);
     const responses = await Promise.allSettled(
       movies.map(({ url }) => this.getSingleTorrent(url))
     );
