@@ -22,6 +22,10 @@ export function errorHandler(
     errorMessage = error.message;
     statusCode = error.statusCode;
   }
+  if(process.env.NODE_ENV === 'development'){
+    console.error(error);
+  }
+  
   if (isAxiosError(error)) {
     errorMessage = error?.response?.data;
     statusCode = 400;
