@@ -6,6 +6,7 @@ import IResultResponse from "../interfaces/IResultResponse";
 class Yts extends TorrentSupper {
   constructor() {
     super("yts");
+    this.init()
   }
   public async generateSearch(search: string): Promise<ITorrentMovie[]> {
     const $: CheerioAPI = await super.getPageContent(

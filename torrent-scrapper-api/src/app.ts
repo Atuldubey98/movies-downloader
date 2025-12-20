@@ -21,6 +21,7 @@ import { sortMoviesOnSeeds } from "./utils/operateOnMovies";
 import { getMagnetAndVideoUrl, searchAndPage } from "./utils/sanitizeText";
 import { toEntry } from "./utils/streamUtils";
 import compression from "compression";
+import { logger } from "./logger";
 const oneThreeThreeSeven: OneThreeThreeSeven = new OneThreeThreeSeven();
 const yts: Yts = new Yts();
 const pirateBay = new PirateBay();
@@ -75,16 +76,20 @@ app.get(
         next(createHttpError(404, "NOT_FOUND"));
       } else {
         const responses = await Promise.allSettled([
-          oneThreeThreeSeven.generateResults(search, page),
-          yts.generateResults(search),
           pirateBay.generateResults(search, page),
-        ]);        
+          yts.generateResults(search),
+          oneThreeThreeSeven.generateResults(search, page),
+        ]);
+
         const movies: ITorrentMovie[] = responses
-          .map((response) =>
-            response.status === "fulfilled" ? response.value.movies : []
+          .map((response) => {
+            return response.status === "fulfilled" ? response.value.movies : [];
+          }
           )
           .flat(1);
         const time = (performance.now() - initialTime) / 1000;
+        logger.info(`Search completed for ${search} in ${time} seconds.`);
+        logger.info(`Total movies found: ${movies.length} from all providers.`);
         return res.status(200).send({
           time,
           data: movies.sort(sortMoviesOnSeeds),

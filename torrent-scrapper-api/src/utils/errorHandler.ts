@@ -1,10 +1,11 @@
 import { isAxiosError } from "axios";
 import { NextFunction, Request, Response } from "express";
 import { isHttpError } from "http-errors";
+import { logger } from "../logger";
 export function logErrors(
   err: Error,
-  req: Request,
-  res: Response,
+  _: Request,
+  __: Response,
   next: NextFunction
 ) {
   next(err);
@@ -14,7 +15,6 @@ export function errorHandler(
   error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
 ) {
   let errorMessage = "An unknown error occured.";
   let statusCode = 500;
@@ -22,10 +22,7 @@ export function errorHandler(
     errorMessage = error.message;
     statusCode = error.statusCode;
   }
-  if(process.env.NODE_ENV === 'development'){
-    console.error(error);
-  }
-  
+  logger.error(`Error on ${req.method} ${req.url} - ${errorMessage}`);
   if (isAxiosError(error)) {
     errorMessage = error?.response?.data;
     statusCode = 400;

@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import IResultResponse from "../interfaces/IResultResponse";
 import ITorrentMovie from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
@@ -6,6 +7,7 @@ import { CheerioAPI } from "cheerio";
 class PirateBay extends TorrentSupper {
   constructor() {
     super("pirateBay");
+    this.init()
   }
   public async generateResults(
     search: string,
@@ -13,10 +15,10 @@ class PirateBay extends TorrentSupper {
   ): Promise<IResultResponse> {
     const $: CheerioAPI = await super.getPageContent(
       `/search/${search}/1/99/0`
-    );    
+    );
     const table = $("#searchResult > tbody > tr");
     const totalPagesDiv = $(
-      `#searchResult > tbody > tr:nth-child(${table.length-1}) > td`
+      `#searchResult > tbody > tr:nth-child(${table.length - 1}) > td`
     )
       .text()
       .trim()
@@ -50,6 +52,8 @@ class PirateBay extends TorrentSupper {
         movies.push({ name, url, magnet, category, leechers, seeders });
       }
     });
+    logger.info(`Found ${movies.length} movies for search: ${search} on page: ${page} pirateBay`);
+
     return { totalPages, movies };
   }
 }

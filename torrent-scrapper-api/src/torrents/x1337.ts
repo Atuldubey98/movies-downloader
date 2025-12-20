@@ -2,9 +2,11 @@ import { CheerioAPI, load } from "cheerio";
 import ITorrentMovie from "../interfaces/ITorrentMovie";
 import TorrentSupper from "./TorrentSupper";
 import IResultResponse from "../interfaces/IResultResponse";
+import { logger } from "../logger";
 class OneThreeThreeSeven extends TorrentSupper {
   constructor() {
     super("x1337");
+    this.init()
   }
   /**
    * async
@@ -56,10 +58,14 @@ class OneThreeThreeSeven extends TorrentSupper {
     };
   }
   public async getMagnetUrl(url: string) {
-    const response = await this.axiosInstance.get(url);
-    const $: CheerioAPI = load(response.data);
-    const magnet = $("#openPopup").attr("href");
-    return magnet;
+    try {
+      const response = await this.axiosInstance.get(url);
+      const $: CheerioAPI = load(response.data);
+      const magnet = $("#openPopup").attr("href");
+      return magnet;
+    } catch (error) {
+      return "#"
+    }
   }
   public async generateResults(
     search: string,
@@ -120,6 +126,7 @@ class OneThreeThreeSeven extends TorrentSupper {
       }
     });
     movies = movies.map((movie, index) => ({ ...movie, ...other[index] }));
+    logger.info(`Found ${movies.length} movies for search: ${search} on page: ${page} x1337`);
     return { totalPages, movies };
   }
 }
