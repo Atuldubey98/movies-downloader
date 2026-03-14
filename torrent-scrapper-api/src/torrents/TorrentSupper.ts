@@ -52,7 +52,7 @@ class TorrentSupper {
 
     let failures = 0;
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       mirrors.forEach(mirror => {
         axios.get(mirror, {
           timeout: 3000,
@@ -62,7 +62,7 @@ class TorrentSupper {
           .catch(() => {
             failures++;
             if (failures === mirrors.length) {
-              reject(new Error(`No working mirrors found for ${this.provider}`));
+              logger.error(`All mirrors for provider ${this.provider} are down.`);
             }
           });
       });
